@@ -1,4 +1,4 @@
-#include "pacman.h"
+#include "main.h"
 
 bool init()
 {
@@ -38,7 +38,7 @@ bool init()
     return success;
 }
 
-void logError(string errorType)
+void logError(std::string errorType)
 {
     switch (errorType)
     {
@@ -54,24 +54,23 @@ void logError(string errorType)
     }
 }
 
-bool loadMedia(LTexture gTexture, std::string path)
+bool loadMedia(LTexture gTexture, WallTile* wallTiles[], std::string path)
 {
     bool success = true;
+    // Load image for texture
     if (gTexture.loadFromFile(path) == false)
     {
         printf("Error: Unable to load media to texture!\n");
         logError("SDL");
         success = false;
     }
+    // Load Pacman.map for map
+    if (!setWallTile(wallTiles))
+    {
+        printf("Error: Unable to load wall tile map!\n");
+        success = false;
+    }
     return success;
-}
-
-bool setWallTile(WallTile* wallTiles[])
-{
-    bool success = true;
-    int x = 0, y = 0;
-
-    std::ifstream Map()
 }
 
 void close()
@@ -80,69 +79,6 @@ void close()
     gRenderer = NULL;
     SDL_DestroyWindow(gWindow);
     gWindow = NULL;
-}
-
-WallTile::WallTile(int x, int y)
-{
-	mBox.x = x;
-	mBox.y = y;
-	mBox.w = tileWidth;
-	mBox.h = tileHeight;
-}
-
-void WallTile::render(int x, int y)
-{
-
-}
-
-LTexture::LTexture()
-{
-    mTexture = NULL;
-    mWidth = 0;
-    mHeight = 0;
-}
-
-LTexture::~LTexture()
-{
-    free();
-}
-
-bool LTexture::loadFromFile(std::string path)
-{
-    free();
-    SDL_Texture* newTexture = NULL;
-    SDL_Surface* loadSurface = SDL_LoadBMP(path.c_str());
-    if (loadSurface == NULL)
-    {
-        printf("Failed to load image %s!\n", path.c_str());
-        logError("SDL");
-    }
-
-    newTexture = SDL_CreateTextureFromSurface(gRenderer, loadSurface);
-    if (newTexture == NULL)
-    {
-        printf("Failed to create texture from %s!", path.c_str());
-        logError("IMG");
-    }
-    mTexture = newTexture;
-    return mTexture != NULL;
-}
-
-void LTexture::render(int x, int y, )
-{
-    SDL_Rect renderRectDst = {x, y, mWidth, mHeight};
-    SDL_RenderCopy(gRenderer, mTexture, NULL, &renderRectDst);
-}
-
-void LTexture::free()
-{
-    if (mTexture != NULL)
-    {
-        SDL_DestroyTexture(mTexture);
-        mTexture = NULL;
-        mWidth = 0;
-        mHeight = 0;
-    }
 }
 
 int main(int argc, char* args[])
