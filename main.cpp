@@ -33,6 +33,18 @@ bool init()
                 logError("SDL");
                 success = false;
             }
+            else
+            {
+                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+                int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+                if((IMG_Init(imgFlags)) != (imgFlags))
+                {
+                    printf("Error: Unable to initialize SDL_image support for JPG and PNG!\n");
+                    logError("IMG");
+                    success = false;
+                }
+            }
         }
     }
     return success;
@@ -54,18 +66,10 @@ void logError(std::string errorType)
     }
 }
 
-bool loadMedia(LTexture gTexture, WallTile* wallTiles[], std::string path)
+bool loadTileMedia(Tile* tiles[], std::string path)
 {
     bool success = true;
-    // Load image for texture
-    if (gTexture.loadFromFile(path) == false)
-    {
-        printf("Error: Unable to load media to texture!\n");
-        logError("SDL");
-        success = false;
-    }
-    // Load Pacman.map for map
-    if (!setWallTile(wallTiles))
+    if (!setTiles(tiles, path.c_str()))
     {
         printf("Error: Unable to load wall tile map!\n");
         success = false;
@@ -73,16 +77,153 @@ bool loadMedia(LTexture gTexture, WallTile* wallTiles[], std::string path)
     return success;
 }
 
-void close()
+bool loadTextureMedia(LTexture& gTexture, std::string path)
 {
+    bool success = true;
+    if (gTexture.loadFromFile(path) == false)
+    {
+        printf("Error: Unable to load media to texture!\n");
+        logError("SDL");
+        success = false;
+    }
+    return success;
+}
+
+void close(Tile* tiles[])
+{
+    // Deallocate tiles
+    for (int i = 0; i < TOTAL_TILES; i++)
+    {
+        if (tiles[i] == NULL)
+        {
+            delete tiles[i];
+            tiles[i] = NULL;
+        }
+    }
+
+    gWallTexture.free();
+    gPacmanTexture.free();
+    gBlinkyTexture.free();
+    gClydeTexture.free();
+    gInkeyTexture.free();
+    gBigYummy.free();
+    gSmallYummy.free();
+    gCherry.free();
+
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
+
     SDL_DestroyWindow(gWindow);
     gWindow = NULL;
+
+    IMG_Quit();
+    SDL_Quit();
+}
+
+bool checkCollision(SDL_Rect a, SDL_Rect b)
+{
+    int leftA = a.x, leftB = b.x;
+    int rightA = a.x + a.w, rightB = b.x + b.w;
+    int topA = a.y, topB = b.y;
+    int bottomA = a.y + a.h, bottomB = b.y + b.h;
+
+    if(bottomA <= topB)
+    {
+        return false;
+    }
+
+    if(topA >= bottomB)
+    {
+        return false;
+    }
+
+    if(rightA <= leftB)
+    {
+        return false;
+    }
+
+    if(leftA >= rightB)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool setTiles(Tile* tiles[], std::string path)
+{
+    bool success = true;
+    int x = 0, y = 0;
+
+    std::ifstream Map(path.c_str());
+
+    if (!Map.is_open())
+    {
+        printf("Error: Unable to load map file!\n");
+        success = false;
+    }
+    else
+    {
+        for (int i = 0; i < TOTAL_TILES; i++)
+        {
+            int tileType;
+            // Currently there is two tile types: 1 (wall) and 0 (space)
+            Map >> tileType;
+
+            if (Map.fail())
+            {
+                printf("Error: Unexpected end of file when loading map!\n");
+                success = false;
+                break;
+            }
+
+            if (tileType >= 0) && (tileType < TYPES_OF_TILES)
+            {
+                tiles[i] = new Tile(x, y, tileType);
+            }
+            else
+            {
+                printf("Error: Invalid tile type when loading map at %d!\n", i);
+                success = false;
+                break;
+            }
+
+            x += TILE_WIDTH;
+            if (x >= LEVEL_WIDTH)
+            {
+                x = 0;
+                y += TILE_HEIGHT;
+            }
+        }
+    }
+    Map.close();
+    return success;
+}
+
+bool touchesWall(SDL_Rect box, Tile* tiles[])
+{
+    for (int i = 0; i < TOTAL_TILES; i++)
+    {
+        if (tiles[i]->getType() == TILE_WALL)
+        {
+            if (checkCollision(box, tiles[i]->getBox()))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 int main(int argc, char* args[])
 {
+    if (!init())
+    {
+        printf("UNABLE TO INITIALIZE!\n");
+    }
+    else
+    {
+        if (!loadTextureMedia())
+    }
 	return 0;
 }
 

@@ -22,12 +22,19 @@ bool LTexture::loadFromFile(std::string path)
         printf("Failed to load image %s!\n", path.c_str());
         logError("SDL");
     }
-
-    newTexture = SDL_CreateTextureFromSurface(gRenderer, loadSurface);
-    if (newTexture == NULL)
+    else
     {
-        printf("Failed to create texture from %s!", path.c_str());
-        logError("IMG");
+        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadSurface);
+        if (newTexture == NULL)
+        {
+            printf("Failed to create texture from %s!", path.c_str());
+            logError("IMG");
+        }
+        else
+        {
+            mWidth = loadSurface->w;
+            mHeight = loadSurface->h;
+        }
     }
     mTexture = newTexture;
     return mTexture != NULL;

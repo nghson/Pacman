@@ -21,6 +21,7 @@ private:
 
     int mWidth;
     int mHeight;
+    int mVel = 0;
 };
 
 #endif // TEXTURE_H

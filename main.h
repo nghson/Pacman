@@ -4,24 +4,47 @@
 #include <string>
 #include <fstream>
 
+#include "texture.h"
+#include "tile.h"
+#include "dot.h"
+
 const int SCREEN_HEIGHT = 1280;
 const int SCREEN_WIDTH = 720;
 
-const int TOTAL_TYPES_OF_TILES = 2;
+const int TOTAL_TILES = 868;  // 868 = 28*31
+const int TYPES_OF_TILES = 2;
+const int TILE_WIDTH = 25;
+const int TILE_HEIGHT = 25;
+const int LEVEL_WIDTH = 775;
+const int LEVEL_HEIGHT = 700;
 
+const int TILE_SPACE = 0;
+const int TILE_WALL = 1;
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-SDL_Texture* gWallTileTexture = NULL;
 
 void logError(std::string errorType);
 bool init();
-bool loadMedia();
+bool loadTextureMedia(LTexture& gTexture, std::string path);
+bool loadTileMedia(Tile* tiles[], std::string path);
+void close(Tile* tiles[]);
+bool checkCollision(SDL_Rect a, SDL_Rect b);
 bool setTiles(Tile* tiles[], std::string path);
-void close();
+bool touchesWall(SDL_Rect box, Tile* tiles[]);
 
-#include "texture.h"
+LTexture gWallTexture;
+LTexture gPacmanTexture;
+LTexture gBlinkyTexture;
+LTexture gClydeTexture;
+LTexture gInkeyTexture;
+LTexture gBigYummy;
+LTexture gSmallYummy;
+LTexture gCherry;
 
-LTexture gTileTexture;
+Dot gPacmanDot;
+Dot gBlinkyDot;
+Dot gClydeDot;
+Dot gInkeyDot;
 
 
