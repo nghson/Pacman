@@ -52,15 +52,18 @@ bool init()
 
 void logError(std::string errorType)
 {
-    switch (errorType)
+    if (errorType == "SDL")
     {
-    case "SDL":
         printf("SDL Error: %s\n", SDL_GetError());
         return;
-    case "IMG":
+    }
+    else if (errorType == "IMG")
+    {
         printf("SDL_image Error: %s\n", IMG_GetError());
         return;
-    default:
+    }
+    else
+    {
         printf("Undefined Error!\n");
         return;
     }
@@ -106,9 +109,9 @@ void close(Tile* tiles[])
     gBlinkyTexture.free();
     gClydeTexture.free();
     gInkeyTexture.free();
-    gBigYummy.free();
-    gSmallYummy.free();
-    gCherry.free();
+    gBigYummyTexture.free();
+    gSmallYummyTexture.free();
+    gCherryTexture.free();
 
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
@@ -154,7 +157,7 @@ bool setTiles(Tile* tiles[], std::string path)
     bool success = true;
     int x = 0, y = 0;
 
-    std::ifstream Map(path.c_str());
+    std::ifstream Map(path);
 
     if (!Map.is_open())
     {
@@ -176,7 +179,7 @@ bool setTiles(Tile* tiles[], std::string path)
                 break;
             }
 
-            if (tileType >= 0) && (tileType < TYPES_OF_TILES)
+            if ((tileType >= 0) && (tileType < TYPES_OF_TILES))
             {
                 tiles[i] = new Tile(x, y, tileType);
             }
@@ -223,18 +226,19 @@ int main(int argc, char* args[])
     else
     {
         Tile* tileSet[TOTAL_TILES];
-        if (!loadTextureMedia(gPacmanTexture || !loadTextureMedia(gBlinkyTexture))
-            !loadTextureMedia(gClydeTexture) || !loadTextureMedia(gInkeyTexture)
-            !loadTextureMedia(gBigYummy) || !loadTextureMedia(gSmallYummy)
-            !loadTextureMedia(gCherry) || !loadTextureMedia(gWallTexture))
+        if (!loadTextureMedia(gPacmanTexture, "data/pacman-test.bmp") || !loadTextureMedia(gBlinkyTexture, "data/blinky-test.bmp") ||
+            !loadTextureMedia(gClydeTexture, "data/clyde-test.bmp") || !loadTextureMedia(gInkeyTexture, "data/inkey-test.bmp") ||
+            !loadTextureMedia(gBigYummyTexture, "data/bigyummy-test.bmp") || !loadTextureMedia(gSmallYummyTexture, "data/smallyummy-test.bmp") ||
+            !loadTextureMedia(gCherryTexture, "data/cherry-test.bmp") || !loadTextureMedia(gWallTexture, "data/walltile-test.bmp") ||
+            !loadTextureMedia(gPinkyTexture, "data/pinky-test.bmp") || !loadTextureMedia(gSpaceTexture, "data/spacetile-test.bmp"))
         {
             printf("UNABLE TO LOAD MEDIA TO TEXTURE!\n");
         }
         else
         {
-            if (!setTiles(tileSet, "data/tile.bmp"))
+            if (!setTiles(tileSet, "data/Map.txt"))
             {
-                printf("UNABLE TO LOAD MEDIA TO TILES!\n");
+                printf("UNABLE TO SET THE TILES!\n");
             }
             else
             {
@@ -248,12 +252,24 @@ int main(int argc, char* args[])
                         {
                             quit = true;
                         }
-                        gPacmanDot.handleEvent(&e);
+                        gPacmanDot.handleEvent(e);
                     }
-                    gPacmanDot.move()
+                    gPacmanDot.move(tileSet);
+
+                    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                    SDL_RenderClear(gRenderer);
+
+                    for (int i = 0; i < TOTAL_TILES; i++)
+                    {
+                        tileSet[i]->render(tileSet[i]->getType());
+                    }
+                    gPacmanDot.render(gPacmanTexture);
+
+                    SDL_RenderPresent(gRenderer);
                 }
             }
         }
+        close(tileSet);
     }
 	return 0;
 }

@@ -2,6 +2,9 @@
 #define DOT_H
 
 #include <SDL2/SDL.h>
+#include "texture.h"
+#include "tile.h"
+#include "main.h"
 
 class Dot
 {
@@ -17,18 +20,15 @@ public:
     void handleEvent(SDL_Event& e);
 
     // Move the dot
-    void move(SDL_Rect& wall);
+    void move(Tile* tiles[]);
 
     // Render the texture representing the dot
     void render(LTexture& gDotTexture);
 private:
-    // Position of the dot
-    int mPosX, mPosY;
-
-    // Velocity of the dot
-    int mVelX, mVelY;
-
     // Collision box
-    SDL_Rect mCollider;
+    SDL_Rect mBox;
+
+    // Velocity
+    int mVelX , mVelY;
 };
 #endif // DOT_H

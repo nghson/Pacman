@@ -2,15 +2,17 @@
 #define TILE_H
 
 #include <SDL2/SDL.h>
+#include "texture.h"
+#include "main.h"
 
 class Tile
 {
 public:
     // Constructor
-    Tile(int x, int y, int tileWidth, tileHeight);
+    Tile(int x, int y, int tileType);
 
     // Render the wall tile
-    void render();
+    void render(int tileType);
 
     // Get the tile type
     int getType();

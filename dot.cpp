@@ -2,17 +2,16 @@
 
 Dot::Dot()
 {
-    mPosX = 0;
-    mPosY = 0;
-
-    mCollider.w = DOT_WIDTH;
-    mCollider.h = DOT_HEIGHT;
+    mBox.x = 0;
+    mBox.y = 0;
+    mBox.w = DOT_WIDTH;
+    mBox.h = DOT_HEIGHT;
 
     mVelX = 0;
     mVelY = 0;
 }
 
-Dot::handleEvent(SDL_Event& e)
+void Dot::handleEvent(SDL_Event& e)
 {
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
@@ -34,7 +33,7 @@ Dot::handleEvent(SDL_Event& e)
     }
     else if (e.type == SDL_KEYUP && e.key.repeat == 0)
     {
-        swtich (e.key.keysym.sym)
+        switch (e.key.keysym.sym)
         {
         case SDLK_UP:
             mVelY += DOT_VEL;
@@ -52,23 +51,22 @@ Dot::handleEvent(SDL_Event& e)
     }
 }
 
-void Dot::move()
+void Dot::move(Tile* tiles[])
 {
-    mPosX += mVelX;
-    mCollider.x = mPosX;
-    if ((mPosX < 0 || (mPosX + DOT_WIDTH > SCREEN_WIDTH) || touchesWall(mBox, tiles))
+    mBox.x += mVelX;
+    if ((mBox.x < 0) || (mBox.x + DOT_WIDTH > LEVEL_WIDTH) || touchesWall(mBox, tiles))
     {
-        mPosX -= mVelX;
+        mBox.x -= mVelX;
     }
 
-    mPosY += mVelY;
-    if ((mPosY < 0) || (mPosY + DOT_HEIGHT > SCREEN_HEIGHT) || touchesWall(mBox, tiles))
+    mBox.y += mVelY;
+    if ((mBox.y < 0) || (mBox.y + DOT_HEIGHT > SCREEN_HEIGHT) || touchesWall(mBox, tiles))
     {
-        mPosY -= mVelY;
+        mBox.y -= mVelY;
     }
 }
 
-void Dot::render(LTexture& gDotTexture)
+void Dot::render()
 {
-    gDotTexture.render(mPosX, mPosY);
+    gPacmanTexture.render(mBox.x, mBox.y);
 }

@@ -1,3 +1,6 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
@@ -21,6 +24,12 @@ const int LEVEL_HEIGHT = 700;
 const int TILE_SPACE = 0;
 const int TILE_WALL = 1;
 
+const int PACMAN = 0;
+const int BLINKY = 1;
+const int CLYDE = 2;
+const int INKEY = 3;
+const int PINKY = 4;
+
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
@@ -38,13 +47,18 @@ LTexture gPacmanTexture;
 LTexture gBlinkyTexture;
 LTexture gClydeTexture;
 LTexture gInkeyTexture;
-LTexture gBigYummy;
-LTexture gSmallYummy;
-LTexture gCherry;
+LTexture gPinkyTexture;
+LTexture gBigYummyTexture;
+LTexture gSmallYummyTexture;
+LTexture gCherryTexture;
+LTexture gSpaceTexture;
 
 Dot gPacmanDot;
 Dot gBlinkyDot;
 Dot gClydeDot;
 Dot gInkeyDot;
+Dot gPinkyDot;
+
+#endif // MAIN_H
 
 

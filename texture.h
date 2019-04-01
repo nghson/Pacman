@@ -2,9 +2,12 @@
 #define TEXTURE_H
 
 #include <SDL2/SDL.h>
+#include <string>
+#include "main.h"
+
 class LTexture
 {
-private:
+public:
     LTexture();
     ~LTexture();
 

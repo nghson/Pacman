@@ -40,7 +40,7 @@ bool LTexture::loadFromFile(std::string path)
     return mTexture != NULL;
 }
 
-void LTexture::render(int x, int y, )
+void LTexture::render(int x, int y)
 {
     SDL_Rect renderRectDst = {x, y, mWidth, mHeight};
     SDL_RenderCopy(gRenderer, mTexture, NULL, &renderRectDst);
