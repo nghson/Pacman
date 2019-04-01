@@ -31,8 +31,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="collisionDetection.cpp" />
-		<Unit filename="collisionDetection.h" />
 		<Unit filename="dot.cpp" />
 		<Unit filename="dot.h" />
 		<Unit filename="main.cpp" />

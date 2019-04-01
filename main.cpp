@@ -222,7 +222,38 @@ int main(int argc, char* args[])
     }
     else
     {
-        if (!loadTextureMedia())
+        Tile* tileSet[TOTAL_TILES];
+        if (!loadTextureMedia(gPacmanTexture || !loadTextureMedia(gBlinkyTexture))
+            !loadTextureMedia(gClydeTexture) || !loadTextureMedia(gInkeyTexture)
+            !loadTextureMedia(gBigYummy) || !loadTextureMedia(gSmallYummy)
+            !loadTextureMedia(gCherry) || !loadTextureMedia(gWallTexture))
+        {
+            printf("UNABLE TO LOAD MEDIA TO TEXTURE!\n");
+        }
+        else
+        {
+            if (!setTiles(tileSet, "data/tile.bmp"))
+            {
+                printf("UNABLE TO LOAD MEDIA TO TILES!\n");
+            }
+            else
+            {
+                bool quit = false;
+                SDL_Event e;
+                while (!quit)
+                {
+                    while (SDL_PollEvent(&e) != 0)
+                    {
+                        if (e.type == SDL_QUIT)
+                        {
+                            quit = true;
+                        }
+                        gPacmanDot.handleEvent(&e);
+                    }
+                    gPacmanDot.move()
+                }
+            }
+        }
     }
 	return 0;
 }
