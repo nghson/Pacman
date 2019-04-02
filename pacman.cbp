@@ -31,16 +31,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="SDL_Utils.cpp" />
+		<Unit filename="SDL_Utils.hpp" />
 		<Unit filename="collision.cpp" />
-		<Unit filename="collision.h" />
+		<Unit filename="collision.hpp" />
 		<Unit filename="game.cpp" />
-		<Unit filename="game.h" />
+		<Unit filename="game.hpp" />
 		<Unit filename="pacman.cpp" />
-		<Unit filename="pacman.h" />
+		<Unit filename="pacman.hpp" />
 		<Unit filename="texture.cpp" />
-		<Unit filename="texture.h" />
+		<Unit filename="texture.hpp" />
 		<Unit filename="tile.cpp" />
-		<Unit filename="tile.h" />
+		<Unit filename="tile.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

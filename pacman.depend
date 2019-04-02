@@ -1,7 +1,6 @@
 # depslib dependency file v1.0
-1554135196 source:/home/nghson/pacman/texture.cpp
-	"texture.h"
-	"main.h"
+1554211736 source:/home/nghson/pacman/texture.cpp
+	"texture.hpp"
 
 1554179325 /home/nghson/pacman/texture.h
 	<SDL2/SDL.h>
@@ -44,8 +43,8 @@
 	"texture.h"
 	"main.h"
 
-1554179313 source:/home/nghson/pacman/collision.cpp
-	"collision.h"
+1554212068 source:/home/nghson/pacman/collision.cpp
+	"collision.hpp"
 
 1554179300 /home/nghson/pacman/collision.h
 	<SDL2/SDL.h>
@@ -66,4 +65,47 @@
 1554179310 /home/nghson/pacman/pacman.h
 	<SDL2/SDL.h>
 	"tile.h"
+
+1554212094 /home/nghson/pacman/collision.hpp
+	<SDL2/SDL.h>
+
+1554216166 source:/home/nghson/pacman/game.cpp
+	"game.hpp"
+
+1554216565 /home/nghson/pacman/game.hpp
+	<SDL2/SDL.h>
+	<string>
+	<SDL2/SDL_image.h>
+	<stdio.h>
+	<fstream>
+	"SDL_Utils.hpp"
+	"texture.hpp"
+	"tile.hpp"
+	"pacman.hpp"
+	"collision.hpp"
+
+1554214480 /home/nghson/pacman/texture.hpp
+	<SDL2/SDL.h>
+	<string>
+	"SDL_Utils.hpp"
+
+1554216772 /home/nghson/pacman/tile.hpp
+	<SDL2/SDL.h>
+	"texture.hpp"
+
+1554216751 /home/nghson/pacman/pacman.hpp
+	<SDL2/SDL.h>
+	"tile.hpp"
+	"texture.hpp"
+
+1554216642 /home/nghson/pacman/SDL_Utils.hpp
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	"tile.hpp"
+
+1554214442 source:/home/nghson/pacman/pacman.cpp
+	"pacman.hpp"
+
+1554216150 source:/home/nghson/pacman/SDL_Utils.cpp
+	"SDL_Utils.hpp"
 
