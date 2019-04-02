@@ -15,12 +15,15 @@ void Tile::render(int tileType)
 {
     switch (tileType)
     {
-    case 0:
+    // Space tile
+    case SPACE:
         gWallTexture.render(mBox.x, mBox.y);
         break;
-    case 1:
+    // Wall tile
+    case WALL:
         gSpaceTexture.render(mBox.x, mBox.y);
         break;
+    // Handle exception
     default:
         printf("Undefined tile type provided!\n");
         break;
@@ -36,4 +39,6 @@ SDL_Rect Tile::getBox()
 {
     return mBox;
 }
+
+
 

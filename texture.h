@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-#include "main.h"
+#include "game.h"
 
 class LTexture
 {
@@ -28,3 +28,4 @@ private:
 };
 
 #endif // TEXTURE_H
+

@@ -31,10 +31,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="dot.cpp" />
-		<Unit filename="dot.h" />
-		<Unit filename="main.cpp" />
-		<Unit filename="main.h" />
+		<Unit filename="collision.cpp" />
+		<Unit filename="collision.h" />
+		<Unit filename="game.cpp" />
+		<Unit filename="game.h" />
+		<Unit filename="pacman.cpp" />
+		<Unit filename="pacman.h" />
 		<Unit filename="texture.cpp" />
 		<Unit filename="texture.h" />
 		<Unit filename="tile.cpp" />

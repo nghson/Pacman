@@ -3,25 +3,24 @@
 	"texture.h"
 	"main.h"
 
-1554136278 /home/nghson/pacman/texture.h
+1554179325 /home/nghson/pacman/texture.h
 	<SDL2/SDL.h>
 	<string>
-	"main.h"
+	"game.h"
 
-1554135060 /home/nghson/pacman/main.h
+1554138951 /home/nghson/pacman/main.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<stdio.h>
 	<string>
 	<fstream>
 	"texture.h"
-	"tile.h"
-	"dot.h"
+	"tileAndDot.h"
 
-1554136295 /home/nghson/pacman/tile.h
+1554179305 /home/nghson/pacman/tile.h
 	<SDL2/SDL.h>
 	"texture.h"
-	"main.h"
+	"collision.h"
 
 1554136284 /home/nghson/pacman/dot.h
 	<SDL2/SDL.h>
@@ -37,6 +36,34 @@
 	"dot.h"
 	"main.h"
 
-1554135913 source:/home/nghson/pacman/main.cpp
+1554139016 source:/home/nghson/pacman/main.cpp
 	"main.h"
+
+1554138925 /home/nghson/pacman/tileAndDot.h
+	<SDL2/SDL.h>
+	"texture.h"
+	"main.h"
+
+1554179313 source:/home/nghson/pacman/collision.cpp
+	"collision.h"
+
+1554179300 /home/nghson/pacman/collision.h
+	<SDL2/SDL.h>
+	"tile.h"
+	"game.h"
+
+1554179127 /home/nghson/pacman/game.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<stdio.h>
+	<string>
+	<fstream>
+	"texture.h"
+	"tile.h"
+	"pacman.h"
+	"collision.h"
+
+1554179310 /home/nghson/pacman/pacman.h
+	<SDL2/SDL.h>
+	"tile.h"
 

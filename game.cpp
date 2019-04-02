@@ -1,4 +1,20 @@
-#include "main.h"
+#include "game.h"
+
+void logError(int errorType)
+{
+    switch (errorType)
+    {
+    case SDLERROR:
+        printf("SDL Error: %s\n", SDL_GetError());
+        return;
+    case IMGERROR:
+        printf("SDL_image Error: %s\n", IMG_GetError());
+        return;
+    default:
+        printf("Undefined Error!\n");
+        return;
+    }
+}
 
 bool init()
 {
@@ -6,7 +22,7 @@ bool init()
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         printf("Error: Unable to initialize SDL!\n");
-        logError("SDL");
+        logError(SDLERROR);
         success = false;
     }
     else
@@ -21,7 +37,7 @@ bool init()
         if (gWindow == NULL)
         {
             printf("Error: Unable to create window!\n");
-            logError("SDL");
+            logError(SDLERROR);
             success = false;
         }
         else
@@ -30,7 +46,7 @@ bool init()
             if (gRenderer == NULL)
             {
                 printf("Error: Unable to create renderer!\n");
-                logError("SDL");
+                logError(SDLERROR);
                 success = false;
             }
             else
@@ -41,7 +57,7 @@ bool init()
                 if((IMG_Init(imgFlags)) != (imgFlags))
                 {
                     printf("Error: Unable to initialize SDL_image support for JPG and PNG!\n");
-                    logError("IMG");
+                    logError(IMGERROR);
                     success = false;
                 }
             }
@@ -50,23 +66,56 @@ bool init()
     return success;
 }
 
-void logError(std::string errorType)
+bool setTiles(Tile* tiles[], std::string path)
 {
-    if (errorType == "SDL")
+    bool success = true;
+    int x = 0, y = 0;
+
+    std::ifstream Map(path);
+
+    if (!Map.is_open())
     {
-        printf("SDL Error: %s\n", SDL_GetError());
-        return;
-    }
-    else if (errorType == "IMG")
-    {
-        printf("SDL_image Error: %s\n", IMG_GetError());
-        return;
+        printf("Unable to load map file!\n");
+        success = false;
     }
     else
     {
-        printf("Undefined Error!\n");
-        return;
+        for (int i = 0; i < TOTAL_TILES; i++)
+        {
+            int tileType;
+
+            // Currently there is two tile types:
+            // 1 (wall) and 0 (space)
+            Map >> tileType;
+
+            if (Map.fail())
+            {
+                printf("Error: Unexpected end of file when loading map!\n");
+                success = false;
+                break;
+            }
+
+            if ((tileType >= 0) && (tileType < TYPES_OF_TILES))
+            {
+                tiles[i] = new Tile(x, y, tileType);
+            }
+            else
+            {
+                printf("Invalid tile type when loading map at %d!\n", i);
+                success = false;
+                break;
+            }
+
+            x += TILE_WIDTH;
+            if (x >= SCREEN_WIDTH)
+            {
+                x = 0;
+                y += TILE_HEIGHT;
+            }
+        }
     }
+    Map.close();
+    return success;
 }
 
 bool loadTileMedia(Tile* tiles[], std::string path)
@@ -80,14 +129,32 @@ bool loadTileMedia(Tile* tiles[], std::string path)
     return success;
 }
 
-bool loadTextureMedia(LTexture& gTexture, std::string path)
+bool loadTextureMedia(int textureType, std::string path)
 {
     bool success = true;
-    if (gTexture.loadFromFile(path) == false)
+    switch (textureType)
     {
-        printf("Error: Unable to load media to texture!\n");
-        logError("SDL");
-        success = false;
+    case WALL:
+        if (gWallTexture.loadFromFile(path) == false)
+        {
+            printf("Error: Unable to load media to texture!\n");
+            success = false;
+        }
+        break;
+    case SPACE:
+        if (gSpaceTexture.loadFromFile(path) == false)
+        {
+            printf("Error: Unable to load media to texture!\n");
+            success = false;
+        }
+        break;
+    case PACMAN:
+        if (gPacmanTexture.loadFromFile(path) == false)
+        {
+            printf("Error: Unable to load media to texture!\n");
+            success = false;
+        }
+        break;
     }
     return success;
 }
@@ -106,12 +173,7 @@ void close(Tile* tiles[])
 
     gWallTexture.free();
     gPacmanTexture.free();
-    gBlinkyTexture.free();
-    gClydeTexture.free();
-    gInkeyTexture.free();
-    gBigYummyTexture.free();
-    gSmallYummyTexture.free();
-    gCherryTexture.free();
+    gSpaceTexture.free();
 
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
@@ -123,100 +185,6 @@ void close(Tile* tiles[])
     SDL_Quit();
 }
 
-bool checkCollision(SDL_Rect a, SDL_Rect b)
-{
-    int leftA = a.x, leftB = b.x;
-    int rightA = a.x + a.w, rightB = b.x + b.w;
-    int topA = a.y, topB = b.y;
-    int bottomA = a.y + a.h, bottomB = b.y + b.h;
-
-    if(bottomA <= topB)
-    {
-        return false;
-    }
-
-    if(topA >= bottomB)
-    {
-        return false;
-    }
-
-    if(rightA <= leftB)
-    {
-        return false;
-    }
-
-    if(leftA >= rightB)
-    {
-        return false;
-    }
-    return true;
-}
-
-bool setTiles(Tile* tiles[], std::string path)
-{
-    bool success = true;
-    int x = 0, y = 0;
-
-    std::ifstream Map(path);
-
-    if (!Map.is_open())
-    {
-        printf("Error: Unable to load map file!\n");
-        success = false;
-    }
-    else
-    {
-        for (int i = 0; i < TOTAL_TILES; i++)
-        {
-            int tileType;
-            // Currently there is two tile types: 1 (wall) and 0 (space)
-            Map >> tileType;
-
-            if (Map.fail())
-            {
-                printf("Error: Unexpected end of file when loading map!\n");
-                success = false;
-                break;
-            }
-
-            if ((tileType >= 0) && (tileType < TYPES_OF_TILES))
-            {
-                tiles[i] = new Tile(x, y, tileType);
-            }
-            else
-            {
-                printf("Error: Invalid tile type when loading map at %d!\n", i);
-                success = false;
-                break;
-            }
-
-            x += TILE_WIDTH;
-            if (x >= LEVEL_WIDTH)
-            {
-                x = 0;
-                y += TILE_HEIGHT;
-            }
-        }
-    }
-    Map.close();
-    return success;
-}
-
-bool touchesWall(SDL_Rect box, Tile* tiles[])
-{
-    for (int i = 0; i < TOTAL_TILES; i++)
-    {
-        if (tiles[i]->getType() == TILE_WALL)
-        {
-            if (checkCollision(box, tiles[i]->getBox()))
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 int main(int argc, char* args[])
 {
     if (!init())
@@ -226,11 +194,9 @@ int main(int argc, char* args[])
     else
     {
         Tile* tileSet[TOTAL_TILES];
-        if (!loadTextureMedia(gPacmanTexture, "data/pacman-test.bmp") || !loadTextureMedia(gBlinkyTexture, "data/blinky-test.bmp") ||
-            !loadTextureMedia(gClydeTexture, "data/clyde-test.bmp") || !loadTextureMedia(gInkeyTexture, "data/inkey-test.bmp") ||
-            !loadTextureMedia(gBigYummyTexture, "data/bigyummy-test.bmp") || !loadTextureMedia(gSmallYummyTexture, "data/smallyummy-test.bmp") ||
-            !loadTextureMedia(gCherryTexture, "data/cherry-test.bmp") || !loadTextureMedia(gWallTexture, "data/walltile-test.bmp") ||
-            !loadTextureMedia(gPinkyTexture, "data/pinky-test.bmp") || !loadTextureMedia(gSpaceTexture, "data/spacetile-test.bmp"))
+        if (!loadTextureMedia(WALL, "data/walltile-test.bmp") ||
+            !loadTextureMedia(SPACE, "data/spacetile-test.bmp") ||
+            !loadTextureMedia(PACMAN, "data/pacman-test.bmp"))
         {
             printf("UNABLE TO LOAD MEDIA TO TEXTURE!\n");
         }
@@ -252,9 +218,9 @@ int main(int argc, char* args[])
                         {
                             quit = true;
                         }
-                        gPacmanDot.handleEvent(e);
+                        pacman.handleEvent(e);
                     }
-                    gPacmanDot.move(tileSet);
+                    pacman.move(tileSet, SCREEN_WIDTH, SCREEN_HEIGHT);
 
                     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
                     SDL_RenderClear(gRenderer);
@@ -263,7 +229,7 @@ int main(int argc, char* args[])
                     {
                         tileSet[i]->render(tileSet[i]->getType());
                     }
-                    gPacmanDot.render(gPacmanTexture);
+                    pacman.render();
 
                     SDL_RenderPresent(gRenderer);
                 }

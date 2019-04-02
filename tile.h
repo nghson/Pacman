@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "texture.h"
-#include "main.h"
+#include "collision.h"
 
 class Tile
 {

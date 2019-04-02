@@ -1,33 +1,33 @@
-#include "dot.h"
+#include "pacman.h"
 
-Dot::Dot()
+Pacman::Pacman()
 {
     mBox.x = 0;
     mBox.y = 0;
-    mBox.w = DOT_WIDTH;
-    mBox.h = DOT_HEIGHT;
+    mBox.w = PACMAN_WIDTH;
+    mBox.h = PACMAN_HEIGHT;
 
     mVelX = 0;
     mVelY = 0;
 }
 
-void Dot::handleEvent(SDL_Event& e)
+void Pacman::handleEvent(SDL_Event& e)
 {
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
         switch (e.key.keysym.sym)
         {
         case SDLK_UP:
-            mVelY -= DOT_VEL;
+            mVelY -= PACMAN_VEL;
             break;
         case SDLK_DOWN:
-            mVelY += DOT_VEL;
+            mVelY += PACMAN_VEL;
             break;
         case SDLK_LEFT:
-            mVelX -= DOT_VEL;
+            mVelX -= PACMAN_VEL;
             break;
         case SDLK_RIGHT:
-            mVelX += DOT_VEL;
+            mVelX += PACMAN_VEL;
             break;
         }
     }
@@ -36,37 +36,37 @@ void Dot::handleEvent(SDL_Event& e)
         switch (e.key.keysym.sym)
         {
         case SDLK_UP:
-            mVelY += DOT_VEL;
+            mVelY += PACMAN_VEL;
             break;
         case SDLK_DOWN:
-            mVelY -= DOT_VEL;
+            mVelY -= PACMAN_VEL;
             break;
         case SDLK_LEFT:
-            mVelX += DOT_VEL;
+            mVelX += PACMAN_VEL;
             break;
         case SDLK_RIGHT:
-            mVelX -= DOT_VEL;
+            mVelX -= PACMAN_VEL;
             break;
         }
     }
 }
 
-void Dot::move(Tile* tiles[])
+void Pacman::move(Tile* tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
     mBox.x += mVelX;
-    if ((mBox.x < 0) || (mBox.x + DOT_WIDTH > LEVEL_WIDTH) || touchesWall(mBox, tiles))
+    if ((mBox.x < 0) || (mBox.x + PACMAN_WIDTH > SCREEN_WIDTH) || touchesWall(mBox, tiles))
     {
         mBox.x -= mVelX;
     }
 
     mBox.y += mVelY;
-    if ((mBox.y < 0) || (mBox.y + DOT_HEIGHT > SCREEN_HEIGHT) || touchesWall(mBox, tiles))
+    if ((mBox.y < 0) || (mBox.y + PACMAN_HEIGHT > SCREEN_HEIGHT) || touchesWall(mBox, tiles))
     {
         mBox.y -= mVelY;
     }
 }
 
-void Dot::render()
+void Pacman::render()
 {
     gPacmanTexture.render(mBox.x, mBox.y);
 }
