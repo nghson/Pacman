@@ -5,11 +5,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
+#include <iostream>
 #include <string>
 #include <fstream>
 #include "Texture.h"
 #include "Tile.h"
-#include "Dot.h"
+#include "Pacman.h"
 #include "CheckCollision.h"
 
 //Screen dimension constants

@@ -216,34 +216,34 @@ int main(int argc, char* args[])
 			//Event handler
 			SDL_Event e;
 
-			//The dot that will be moving around on the screen
-			Dot dot(TILE_WIDTH, TILE_HEIGHT);
+			//The pacman
+			Pacman pacman(TILE_WIDTH, TILE_HEIGHT);
 
 			//While application is running
 			while(!quit)
 			{
 				//Handle events on queue
-				while( SDL_PollEvent( &e ) != 0 )
+				while(SDL_PollEvent( &e ) != 0)
 				{
 					//User requests quit
-					if( e.type == SDL_QUIT )
+					if(e.type == SDL_QUIT)
 					{
 						quit = true;
 					}
 
-					//Handle input for the dot
-					dot.handleEvent(e);
+					//Handle input for the pacman
+					pacman.handleEvent(e);
 				}
 
-				//Move the dot
-				dot.move(tileSet);
+				//Move the pacman
+				pacman.move(tileSet);
 
 				//Clear screen
-				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-				SDL_RenderClear( gRenderer );
+				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_RenderClear(gRenderer);
 
 				//Render level
-				for( int i = 0; i < TOTAL_TILES; ++i )
+				for(int i = 0; i < TOTAL_TILES; ++i)
 				{
 					switch (tileSet[i]->getType())
 					{
@@ -258,8 +258,8 @@ int main(int argc, char* args[])
 					}
 				}
 
-				//Render dot
-				dot.render(gPacmanTexture, gRenderer);
+				//Render pacman
+				pacman.render(gPacmanTexture, gRenderer);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
