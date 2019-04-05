@@ -13,7 +13,7 @@ Pacman::Pacman(int _x, int _y)
     mVelY = 0;
 }
 
-void Pacman::handleEvent(SDL_Event& e)
+int Pacman::handleEvent(SDL_Event& e)
 {
     //If a key was pressed
 	if ((e.type == SDL_KEYDOWN && e.key.repeat == 0))
@@ -21,7 +21,7 @@ void Pacman::handleEvent(SDL_Event& e)
         //Adjust the velocity
         switch(e.key.keysym.sym)
         {
-            case SDLK_UP: mVelY -= PACMAN_VEL; break;
+            case SDLK_UP:  break;
             case SDLK_DOWN: mVelY += PACMAN_VEL; break;
             case SDLK_LEFT: mVelX -= PACMAN_VEL; break;
             case SDLK_RIGHT: mVelX += PACMAN_VEL; break;
@@ -95,4 +95,9 @@ void Pacman::render(LTexture& gPacmanTexture, SDL_Renderer* gRenderer)
 {
     //Show the dot
 	gPacmanTexture.render(mBox.x, mBox.y, gRenderer);
+}
+
+bool Pacman::updateVel (int direction)
+{
+    if (direction)
 }

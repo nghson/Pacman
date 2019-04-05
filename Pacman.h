@@ -13,6 +13,12 @@ public:
     static const int PACMAN_WIDTH = 20;
     static const int PACMAN_HEIGHT = 20;
 
+    //Direction from keystroke
+    static const int UP = 0;
+    static const int DOWN = 1;
+    static const int LEFT = 2;
+    static const int RIGHT = 3;
+
     //Maximum axis velocity of pacman
     static const int PACMAN_VEL = 5;
 

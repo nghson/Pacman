@@ -223,7 +223,7 @@ int main(int argc, char* args[])
 			while(!quit)
 			{
 				//Handle events on queue
-				while(SDL_PollEvent( &e ) != 0)
+				while(SDL_PollEvent(&e) != 0)
 				{
 					//User requests quit
 					if(e.type == SDL_QUIT)
@@ -236,6 +236,7 @@ int main(int argc, char* args[])
 				}
 
 				//Move the pacman
+
 				pacman.move(tileSet);
 
 				//Clear screen
