@@ -13,12 +13,6 @@ public:
     static const int PACMAN_WIDTH = 20;
     static const int PACMAN_HEIGHT = 20;
 
-    //Direction from keystroke
-    static const int UP = 0;
-    static const int DOWN = 1;
-    static const int LEFT = 2;
-    static const int RIGHT = 3;
-
     //Maximum axis velocity of pacman
     static const int PACMAN_VEL = 5;
 
@@ -29,7 +23,7 @@ public:
     void handleEvent(SDL_Event& e);
 
     //Moves pacman and check collision against wall tiles
-    bool move(Tile *tiles[]);
+    void move(Tile *tiles[]);
 
     //Shows pacman on the screen
     void render(LTexture& gDotTexture, SDL_Renderer* gRenderer);

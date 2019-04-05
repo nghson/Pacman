@@ -13,91 +13,55 @@ Pacman::Pacman(int _x, int _y)
     mVelY = 0;
 }
 
-int Pacman::handleEvent(SDL_Event& e)
+void Pacman::handleEvent(SDL_Event& e)
 {
     //If a key was pressed
-	if ((e.type == SDL_KEYDOWN && e.key.repeat == 0))
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
         //Adjust the velocity
         switch(e.key.keysym.sym)
         {
-            case SDLK_UP:  break;
-            case SDLK_DOWN: mVelY += PACMAN_VEL; break;
-            case SDLK_LEFT: mVelX -= PACMAN_VEL; break;
-            case SDLK_RIGHT: mVelX += PACMAN_VEL; break;
-        }
-    }
-
-    //If a key was released
-    else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
-            case SDLK_UP: mVelY += PACMAN_VEL; break;
-            case SDLK_DOWN: mVelY -= PACMAN_VEL; break;
-            case SDLK_LEFT: mVelX += PACMAN_VEL; break;
-            case SDLK_RIGHT: mVelX -= PACMAN_VEL; break;
+        case SDLK_UP:
+            mVelY -= PACMAN_VEL;
+            break;
+        case SDLK_DOWN:
+            mVelY += PACMAN_VEL;
+            break;
+        case SDLK_LEFT:
+            mVelX -= PACMAN_VEL;
+            break;
+        case SDLK_RIGHT:
+            mVelX += PACMAN_VEL;
+            break;
         }
     }
 }
 
-bool Pacman::move(Tile *tiles[])
+void Pacman::move(Tile *tiles[])
 {
-    bool deadEnd = false;
-
-    while (true)
+    //While pacman has not collided with a wall in x-direction
+    do
     {
         //Move pacman left or right
         mBox.x += mVelX;
+    } while (!touchesWall(mBox, tiles));
 
-        //If pacman went too far to the left or right
-        if ((mBox.x < 0) || (mBox.x + PACMAN_WIDTH > LEVEL_WIDTH))
-        {
-            //move back
-            mBox.x -= mVelX;
-        }
-        //If pacman touched a wall
-        else if (touchesWall(mBox, tiles))
-        {
-            //move back
-            mBox.x -= mVelX;
-            //Pacman cannot take a turn
-            deadEnd = true;
-        }
-    }
+    //Pacman has collided with a wall in x-direction, so move back
+    mBox.x -= mVelX;
 
-    while (true)
+    //While pacman has not collided with a wall in y-direction
+    do
     {
-        //Move pacman up or down
+        //Move pacman left or right
         mBox.y += mVelY;
+    } while (!touchesWall(mBox, tiles));
 
-        //If pacman went too far up or down or touched a wall
-        if((mBox.y < 0) || (mBox.y + PACMAN_HEIGHT > LEVEL_HEIGHT))
-        {
-            //move back
-            mBox.y -= mVelY;
-        }
-        // If pacman touched a wall
-        else if (touchesWall(mBox, tiles))
-        {
-            //move back
-            mBox.y -= mVelY;
-            //Pacman cannot take a turn
-            deadEnd = true;
-        }
-    }
-
-    return deadEnd;
+    //Pacman has collided with a wall in y-direction, so move back
+    mBox.y -= mVelY;
 }
 
 void Pacman::render(LTexture& gPacmanTexture, SDL_Renderer* gRenderer)
 {
     //Show the dot
 	gPacmanTexture.render(mBox.x, mBox.y, gRenderer);
-}
-
-bool Pacman::updateVel (int direction)
-{
-    if (direction)
 }

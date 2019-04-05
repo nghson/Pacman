@@ -231,12 +231,11 @@ int main(int argc, char* args[])
 						quit = true;
 					}
 
-					//Handle input for the pacman
+					//Handle input for the pacman and update velocity
 					pacman.handleEvent(e);
 				}
 
-				//Move the pacman
-
+                //Move pacman
 				pacman.move(tileSet);
 
 				//Clear screen
@@ -270,7 +269,5 @@ int main(int argc, char* args[])
 		//Free resources and close SDL
 		close(tileSet);
 	}
-
 	return 0;
 }
-
