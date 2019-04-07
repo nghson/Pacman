@@ -109,18 +109,19 @@
 1554216150 source:/home/nghson/pacman/SDL_Utils.cpp
 	"SDL_Utils.hpp"
 
-1554462392 source:/home/nghson/pacman/CheckCollision.cpp
+1554548106 source:/home/nghson/pacman/CheckCollision.cpp
 	"CheckCollision.h"
 
-1554217742 /home/nghson/pacman/CheckCollision.h
+1554547001 /home/nghson/pacman/CheckCollision.h
 	<SDL2/SDL.h>
 
-1554462746 source:/home/nghson/pacman/Game.cpp
+1554570969 source:/home/nghson/pacman/Game.cpp
 	"Game.h"
 
-1554462785 /home/nghson/pacman/Game.h
+1554483771 /home/nghson/pacman/Game.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
+	<iostream>
 	<stdio.h>
 	<string>
 	<fstream>
@@ -134,7 +135,7 @@
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 
-1554223398 /home/nghson/pacman/Tile.h
+1554547984 /home/nghson/pacman/Tile.h
 	<SDL2/SDL.h>
 	"CheckCollision.h"
 	"Texture.h"
@@ -150,13 +151,13 @@
 1554219361 source:/home/nghson/pacman/Texture.cpp
 	"Texture.h"
 
-1554221675 source:/home/nghson/pacman/Tile.cpp
+1554547416 source:/home/nghson/pacman/Tile.cpp
 	"Tile.h"
 
-1554462693 source:/home/nghson/pacman/Pacman.cpp
+1554570930 source:/home/nghson/pacman/Pacman.cpp
 	"Pacman.h"
 
-1554462368 /home/nghson/pacman/Pacman.h
+1554571001 /home/nghson/pacman/Pacman.h
 	<SDL2/SDL.h>
 	"Tile.h"
 	"Texture.h"

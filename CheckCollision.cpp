@@ -1,6 +1,6 @@
 #include "CheckCollision.h"
 
-bool checkCollision( SDL_Rect a, SDL_Rect b )
+bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
     //The sides of the rectangles
     int leftA, leftB;
@@ -20,28 +20,28 @@ bool checkCollision( SDL_Rect a, SDL_Rect b )
     topB = b.y;
     bottomB = b.y + b.h;
 
-    //If any of the sides from A are outside of B
-    if( bottomA < topB )
+    //If any of the sides from A are inside of B
+    if( bottomA <= topB )
     {
         return false;
     }
 
-    if( topA > bottomB )
+    if( topA >= bottomB )
     {
         return false;
     }
 
-    if( rightA < leftB )
+    if( rightA <= leftB )
     {
         return false;
     }
 
-    if( leftA > rightB )
+    if( leftA >= rightB )
     {
         return false;
     }
 
-    //If none of the sides from A are outside B
+    //If none of the sides from A are inside B
     return true;
 }
 

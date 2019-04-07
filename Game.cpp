@@ -232,7 +232,10 @@ int main(int argc, char* args[])
 					}
 
 					//Handle input for the pacman and update velocity
-					pacman.handleEvent(e);
+					if (!pacman.handleNextEvent(tileSet))
+                    {
+                        pacman.handleEvent(e, tileSet);
+                    }
 				}
 
                 //Move pacman

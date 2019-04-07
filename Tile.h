@@ -7,7 +7,7 @@
 
 //The dimensions of the level
 const int LEVEL_WIDTH = 560;
-const int LEVEL_HEIGHT = 600;
+const int LEVEL_HEIGHT = 620;
 
 //Tile constants
 const int TILE_WIDTH = 20;
@@ -20,7 +20,7 @@ class Tile
 {
     public:
 		//Initializes position and type
-		Tile( int x, int y, int tileType );
+		Tile(int x, int y, int tileType);
 
 		//Shows the tile
 		void render(LTexture& gTileTexture, SDL_Renderer* gRenderer);
@@ -40,6 +40,6 @@ class Tile
 };
 
 //Checks collision box against set of tiles
-bool touchesWall( SDL_Rect box, Tile* tiles[] );
+bool touchesWall(SDL_Rect box, Tile* tiles[]);
 
 #endif // TILE_H

@@ -4,6 +4,7 @@
 //Using SDL, SDL_image, standard IO, strings, and file streams
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <iostream>
 #include <stdio.h>
 #include <string>
 #include <fstream>
