@@ -24,7 +24,7 @@ public:
     static const int PACMAN_HEIGHT = 20;
 
     //Maximum axis velocity of pacman
-    static const int PACMAN_VEL = 5;
+    static const int PACMAN_VEL = 2;
 
     //Initializes the variables
     Pacman(int _x, int _y);
@@ -41,18 +41,18 @@ public:
     //Can pacman move in the given direction? If not, maintain the current direction
     bool canMove(int direction, Tile* tiles[]);
 
-    //Can pacman use eNext to move?
-    bool handleNextEvent(Tile* tiles[]);
+    //Handle the pending event
+    void handlePending(Tile* tiles[]);
 
-public:
+private:
     //Collision box of the pacman
     SDL_Rect mBox;
 
     //The velocity of the pacman
     int mVelX, mVelY;
 
-    //Next keystroke, receiving values from the above enumeration
-    int eNext;
+    //Pending keystroke, receiving values from the above enumeration
+    int ePending;
 };
 
 #endif // PACMAN_H

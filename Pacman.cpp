@@ -12,69 +12,8 @@ Pacman::Pacman(int _x, int _y)
     mVelX = 0;
     mVelY = 0;
 
-    //Initialize eNext
-    eNext = NOT_MOVING;
-}
-
-void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
-{
-    //If a key was pressed
-    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
-    {
-        //Adjust the velocity
-        switch(e.key.keysym.sym)
-        {
-        case SDLK_UP:
-            if (canMove(MOVING_UP, tiles))
-            {
-                mVelY = -PACMAN_VEL;
-                mVelX = 0;
-            }
-            else
-            {
-                eNext = MOVING_UP;
-            }
-            break;
-        case SDLK_DOWN:
-            if (canMove(MOVING_DOWN, tiles))
-            {
-                mVelY = PACMAN_VEL;
-                mVelX = 0;
-            }
-            else
-            {
-                eNext = MOVING_DOWN;
-            }
-            break;
-        case SDLK_LEFT:
-            if (canMove(MOVING_LEFT, tiles))
-            {
-                mVelX = -PACMAN_VEL;
-                mVelY = 0;
-            }
-            else
-            {
-                eNext = MOVING_LEFT;
-            }
-            break;
-        case SDLK_RIGHT:
-            if (canMove(MOVING_RIGHT, tiles))
-            {
-                mVelX = PACMAN_VEL;
-                mVelY = 0;
-            }
-            else
-            {
-                eNext = MOVING_RIGHT;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-
-    //Debug
-    printf("mVelX: %d mVelY: %d\n", mVelX, mVelY);
+    //Initialize ePending
+    ePending = NOT_MOVING;
 }
 
 void Pacman::move(Tile *tiles[])
@@ -109,14 +48,12 @@ void Pacman::render(LTexture& gPacmanTexture, SDL_Renderer* gRenderer)
 	gPacmanTexture.render(mBox.x, mBox.y, gRenderer);
 }
 
-
 bool Pacman::canMove(int direction, Tile* tiles[])
 {
     switch (direction)
     {
         case MOVING_LEFT:
             mBox.x -= PACMAN_VEL;
-            //If _pacman touches a wall
             if (touchesWall(mBox, tiles))
             {
                 //move back
@@ -127,7 +64,6 @@ bool Pacman::canMove(int direction, Tile* tiles[])
             break;
         case MOVING_RIGHT:
             mBox.x += PACMAN_VEL;
-            //If _pacman touches a wall
             if (touchesWall(mBox, tiles))
             {
                 //move back
@@ -138,7 +74,6 @@ bool Pacman::canMove(int direction, Tile* tiles[])
             break;
         case MOVING_UP:
             mBox.y -= PACMAN_VEL;
-            //If _pacman touches a wall
             if (touchesWall(mBox, tiles))
             {
                 //move back
@@ -149,7 +84,6 @@ bool Pacman::canMove(int direction, Tile* tiles[])
             break;
         case MOVING_DOWN:
             mBox.y += PACMAN_VEL;
-            //If _pacman touches a wall
             if (touchesWall(mBox, tiles))
             {
                 //move back
@@ -162,42 +96,123 @@ bool Pacman::canMove(int direction, Tile* tiles[])
     return true;
 }
 
-bool Pacman::handleNextEvent(Tile* tiles[])
+void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
 {
-    printf("eNext: %d \n", eNext);
-    if (eNext != NOT_MOVING)
+    //If a key was pressed
+    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
-        switch (eNext)
+        //Adjust the velocity
+        switch (e.key.keysym.sym)
         {
-            case MOVING_UP:
-                if (canMove(MOVING_UP, tiles))
-                {
-                    mVelY = -PACMAN_VEL;
-                    mVelX = 0;
-                    return true;
-                }
-            case MOVING_DOWN:
-                if (canMove(MOVING_DOWN, tiles))
-                {
-                    mVelY = PACMAN_VEL;
-                    mVelX = 0;
-                    return true;
-                }
-            case MOVING_LEFT:
-                if (canMove(MOVING_LEFT, tiles))
-                {
-                    mVelX = -PACMAN_VEL;
-                    mVelY = 0;
-                    return true;
-                }
-            case MOVING_RIGHT:
-                if (canMove(MOVING_RIGHT, tiles))
-                {
-                    mVelX = PACMAN_VEL;
-                    mVelY = 0;
-                    return true;
-                }
+        case SDLK_UP:
+            if (canMove(MOVING_UP, tiles))
+            {
+                mVelY = -PACMAN_VEL;
+                mVelX = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            else
+            {
+                ePending = MOVING_UP;
+                return;
+            }
+            break;
+        case SDLK_DOWN:
+            if (canMove(MOVING_DOWN, tiles))
+            {
+                mVelY = PACMAN_VEL;
+                mVelX = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            else
+            {
+                ePending = MOVING_DOWN;
+                return;
+            }
+            break;
+        case SDLK_LEFT:
+            if (canMove(MOVING_LEFT, tiles))
+            {
+                mVelX = -PACMAN_VEL;
+                mVelY = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            else
+            {
+                ePending = MOVING_LEFT;
+                return;
+            }
+            break;
+        case SDLK_RIGHT:
+            if (canMove(MOVING_RIGHT, tiles))
+            {
+                mVelX = PACMAN_VEL;
+                mVelY = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            else
+            {
+                ePending = MOVING_RIGHT;
+                return;
+            }
+            break;
         }
     }
-    return false;
+
+    //Debug
+    printf("mVelX: %d mVelY: %d\n", mVelX, mVelY);
+}
+
+void Pacman::handlePending(Tile* tiles[])
+{
+    //Debug
+    printf("ePending: %d\n", ePending);
+
+    //Check for pending key
+    if (ePending != NOT_MOVING)
+    {
+        switch (ePending)
+        {
+        case MOVING_UP:
+            if (canMove(MOVING_UP, tiles))
+            {
+                mVelY = -PACMAN_VEL;
+                mVelX = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            break;
+        case MOVING_DOWN:
+            if (canMove(MOVING_DOWN, tiles))
+            {
+                mVelY = PACMAN_VEL;
+                mVelX = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            break;
+        case MOVING_LEFT:
+            if (canMove(MOVING_LEFT, tiles))
+            {
+                mVelX = -PACMAN_VEL;
+                mVelY = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            break;
+        case MOVING_RIGHT:
+            if (canMove(MOVING_RIGHT, tiles))
+            {
+                mVelX = PACMAN_VEL;
+                mVelY = 0;
+                ePending = NOT_MOVING;
+                return;
+            }
+            break;
+        }
+    }
 }

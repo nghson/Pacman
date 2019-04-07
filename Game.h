@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-//Using SDL, SDL_image, standard IO, strings, and file streams
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>

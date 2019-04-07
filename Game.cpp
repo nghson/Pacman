@@ -220,10 +220,10 @@ int main(int argc, char* args[])
 			Pacman pacman(TILE_WIDTH, TILE_HEIGHT);
 
 			//While application is running
-			while(!quit)
+			while (!quit)
 			{
 				//Handle events on queue
-				while(SDL_PollEvent(&e) != 0)
+				if (SDL_PollEvent(&e) != 0)
 				{
 					//User requests quit
 					if(e.type == SDL_QUIT)
@@ -232,11 +232,12 @@ int main(int argc, char* args[])
 					}
 
 					//Handle input for the pacman and update velocity
-					if (!pacman.handleNextEvent(tileSet))
-                    {
-                        pacman.handleEvent(e, tileSet);
-                    }
+                    pacman.handleEvent(e, tileSet);
 				}
+				else
+                {
+                    pacman.handlePending(tileSet);
+                }
 
                 //Move pacman
 				pacman.move(tileSet);
