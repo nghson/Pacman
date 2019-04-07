@@ -33,7 +33,7 @@ public:
     void handleEvent(SDL_Event& e, Tile* tiles[]);
 
     //Moves pacman and check collision against wall tiles
-    void move(Tile *tiles[]);
+    void move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT);
 
     //Shows pacman on the screen
     void render(LTexture& gDotTexture, SDL_Renderer* gRenderer);

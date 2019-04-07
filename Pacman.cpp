@@ -16,30 +16,39 @@ Pacman::Pacman(int _x, int _y)
     ePending = NOT_MOVING;
 }
 
-void Pacman::move(Tile *tiles[])
+void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
-    //Move the dot left or right
+    //Move pacman left or right
     mBox.x += mVelX;
 
-    //If the dot went too far to the left or right or touched a wall
+    //If pacman touched a wall
     if (touchesWall(mBox, tiles))
     {
         //move back
         mBox.x -= mVelX;
     }
+    //Handle the teleport
+    if (mBox.x < 0)
+    {
+        mBox.x = SCREEN_WIDTH - PACMAN_WIDTH;
+    }
+    else if (mBox.x + PACMAN_WIDTH > SCREEN_WIDTH)
+    {
+        mBox.x = 0;
+    }
 
-    //Move the dot up or down
+    //Move pacman up or down
     mBox.y += mVelY;
 
-    //If the dot went too far up or down or touched a wall
+    //If pacman touched a wall
     if (touchesWall(mBox, tiles))
     {
         //move back
         mBox.y -= mVelY;
     }
 
-//    //Debug
-//    printf("mBox.x: %d mBox.y: %d\n", mBox.x, mBox.y);
+    //Debug
+    printf("mBox.x: %d mBox.y: %d\n", mBox.x, mBox.y);
 }
 
 void Pacman::render(LTexture& gPacmanTexture, SDL_Renderer* gRenderer)

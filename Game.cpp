@@ -240,7 +240,7 @@ int main(int argc, char* args[])
                 }
 
                 //Move pacman
-				pacman.move(tileSet);
+				pacman.move(tileSet, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
