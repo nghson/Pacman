@@ -14,14 +14,14 @@ bool init()
 	else
 	{
 		//Set texture filtering to linear
-		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 		{
 			printf( "Warning: Linear texture filtering not enabled!" );
 		}
 
 		//Create window
 		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-		if( gWindow == NULL )
+		if(gWindow == NULL)
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
@@ -30,7 +30,7 @@ bool init()
 		{
 			//Create renderer for window
 			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-			if( gRenderer == NULL )
+			if(gRenderer == NULL)
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 				success = false;
@@ -60,30 +60,44 @@ bool loadMedia(Tile* tiles[])
 	bool success = true;
 
 	//Load dot texture
-	if( !gPacmanTexture.loadFromFile(gRenderer, "test/pacman.bmp") )
+	if (!gPacmanTexture.loadFromFile(gRenderer, "test/pacman.bmp"))
 	{
-		printf( "Failed to load dot texture!\n" );
+		printf( "Failed to load pacman texture!\n" );
 		success = false;
 	}
 
 	//Load wall tile texture
-	if(!gWallTileTexture.loadFromFile(gRenderer, "test/wall.bmp"))
+	if (!gWallTileTexture.loadFromFile(gRenderer, "test/wall.bmp"))
 	{
-		printf( "Failed to load tile set texture!\n" );
+		printf( "Failed to load wall tile texture!\n" );
 		success = false;
 	}
 
-    // Load space tile texture
-    if(!gSpaceTileTexture.loadFromFile(gRenderer, "test/space.bmp"))
+	//Load small yummy texture
+	if (!gSmallYummyTexture.loadFromFile(gRenderer, "test/smallyummy.bmp"))
     {
-        printf( "Failed to load tile set texture!\n" );
+        printf("Failed to load small yummy texture!\n");
+        success = false;
+    }
+
+    //Load big yummy texture
+    if (!gBigYummyTexture.loadFromFile(gRenderer, "test/bigyummy.bmp"))
+    {
+        printf("Failed to load big yummy texture!\n");
+        success = false;
+    }
+
+    //Load space tile texture
+    if (!gSpaceTileTexture.loadFromFile(gRenderer, "test/space.bmp"))
+    {
+        printf("Failed to load space tile texture!\n");
 		success = false;
     }
 
 	//Load tile map
-	if( !setTiles( tiles ) )
+	if (!setTiles(tiles))
 	{
-		printf( "Failed to load tile set!\n" );
+		printf("Failed to load tile set!\n");
 		success = false;
 	}
 

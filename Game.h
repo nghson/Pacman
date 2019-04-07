@@ -34,9 +34,11 @@ SDL_Window* gWindow = NULL;
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
 
-//Scene textures
+//Textures
 LTexture gPacmanTexture;
 LTexture gWallTileTexture;
 LTexture gSpaceTileTexture;
+LTexture gSmallYummyTexture;
+LTexture gBigYummyTexture;
 
 #endif // GAME_H

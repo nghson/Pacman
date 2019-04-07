@@ -12,8 +12,7 @@ const int LEVEL_HEIGHT = 620;
 //Tile constants
 const int TILE_WIDTH = 20;
 const int TILE_HEIGHT = 20;
-//TOTAL_TILES = 28*31
-const int TOTAL_TILES = 868;
+const int TOTAL_TILES = 868; //868 = 28*31
 const int TOTAL_TILE_TYPES = 2;
 
 //The tile
