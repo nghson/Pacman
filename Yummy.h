@@ -31,8 +31,7 @@ class Yummy
 public:
     /*
     There are 4 big yummy
-    Their position relative to the space and wall tiles:
-    tiles[161], tiles[176], tiles[566], tiles[581]
+    Their position relative to the space and wall tiles: tiles[146], tiles[161], tiles[566], tiles[581]
     The rests are small yummy
     */
 
