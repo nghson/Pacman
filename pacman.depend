@@ -115,13 +115,12 @@
 1554547001 /home/nghson/pacman/CheckCollision.h
 	<SDL2/SDL.h>
 
-1554715446 source:/home/nghson/pacman/Game.cpp
+1554747845 source:/home/nghson/pacman/Game.cpp
 	"Game.h"
 
-1554715387 /home/nghson/pacman/Game.h
+1554746999 /home/nghson/pacman/Game.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
-	<iostream>
 	<stdio.h>
 	<string>
 	<fstream>
@@ -136,7 +135,7 @@
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 
-1554714709 /home/nghson/pacman/Tile.h
+1554746900 /home/nghson/pacman/Tile.h
 	<SDL2/SDL.h>
 	"CheckCollision.h"
 	"Texture.h"
@@ -155,10 +154,10 @@
 1554693202 source:/home/nghson/pacman/Tile.cpp
 	"Tile.h"
 
-1554715197 source:/home/nghson/pacman/Pacman.cpp
+1554746988 source:/home/nghson/pacman/Pacman.cpp
 	"Pacman.h"
 
-1554715186 /home/nghson/pacman/Pacman.h
+1554747251 /home/nghson/pacman/Pacman.h
 	<SDL2/SDL.h>
 	<vector>
 	"Tile.h"
@@ -166,12 +165,11 @@
 	"Yummy.h"
 	"CheckCollision.h"
 
-1554715273 source:/home/nghson/pacman/Yummy.cpp
+1554744208 source:/home/nghson/pacman/Yummy.cpp
 	"Yummy.h"
 
-1554715229 /home/nghson/pacman/Yummy.h
+1554747185 /home/nghson/pacman/Yummy.h
 	<SDL2/SDL.h>
-	<climits>
 	"CheckCollision.h"
 	"Texture.h"
 

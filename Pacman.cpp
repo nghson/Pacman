@@ -49,9 +49,6 @@ void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
         //move back
         mBox.y -= mVelY;
     }
-
-    //Debug
-    printf("mBox.x: %d mBox.y: %d\n", mBox.x, mBox.y);
 }
 
 void Pacman::render(LTexture& gPacmanTexture, SDL_Renderer* gRenderer)
@@ -174,16 +171,10 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             break;
         }
     }
-
-    //Debug
-    printf("mVelX: %d mVelY: %d\n", mVelX, mVelY);
 }
 
 void Pacman::handlePending(Tile* tiles[])
 {
-    //Debug
-    printf("ePending: %d\n", ePending);
-
     //Check for pending key
     if (ePending != NOT_MOVING)
     {
@@ -233,7 +224,7 @@ std::vector<int> Pacman::eatYummy(Yummy* yummy[])
 {
     std::vector<int> eatenYummy;
     //Check if pacman has eaten which yummy
-    for (int i = 0; i < TOTAL_YUMMY; i++)
+    for (int i = 0; i < TOTAL_TILES; i++)
     {
         if (checkCollision(mBox, yummy[i]->getBox()))
         {

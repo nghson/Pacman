@@ -6,7 +6,7 @@ bool init()
 	bool success = true;
 
 	//Initialize SDL
-	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
+	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -59,19 +59,33 @@ bool loadMedia(Tile* tiles[], Yummy* yummy[])
 	//Loading success flag
 	bool success = true;
 
+	//Load blank texture
+	if (!gBlankTexture.loadFromFile(gRenderer, "test/blank.bmp"))
+    {
+        printf("Failed to load blank texture!\n");
+        success = false;
+    }
+
 	//Load dot texture
 	if (!gPacmanTexture.loadFromFile(gRenderer, "test/pacman.bmp"))
 	{
-		printf( "Failed to load pacman texture!\n" );
+		printf("Failed to load pacman texture!\n");
 		success = false;
 	}
 
 	//Load wall tile texture
-	if (!gWallTileTexture.loadFromFile(gRenderer, "test/wall.bmp"))
+	if (!gWallTexture.loadFromFile(gRenderer, "test/wall.bmp"))
 	{
-		printf( "Failed to load wall tile texture!\n" );
+		printf("Failed to load wall tile texture!\n");
 		success = false;
 	}
+
+    //Load space tile texture
+    if (!gSpaceTexture.loadFromFile(gRenderer, "test/space.bmp"))
+    {
+        printf("Failed to load space tile texture!\n");
+        success = false;
+    }
 
 	//Load small yummy texture
 	if (!gSmallYummyTexture.loadFromFile(gRenderer, "test/smallyummy.bmp"))
@@ -85,13 +99,6 @@ bool loadMedia(Tile* tiles[], Yummy* yummy[])
     {
         printf("Failed to load big yummy texture!\n");
         success = false;
-    }
-
-    //Load space tile texture
-    if (!gSpaceTileTexture.loadFromFile(gRenderer, "test/space.bmp"))
-    {
-        printf("Failed to load space tile texture!\n");
-		success = false;
     }
 
 	//Load tiles: space, wall, yummy
@@ -117,7 +124,7 @@ void close(Tile* tiles[], Yummy* yummy[])
 	}
 
     //Deallocate yummy
-    for (int i = 0; i < TOTAL_YUMMY; i++)
+    for (int i = 0; i < TOTAL_TILES; i++)
     {
         if (yummy[i] != NULL)
         {
@@ -128,8 +135,8 @@ void close(Tile* tiles[], Yummy* yummy[])
 
 	//Free loaded images
 	gPacmanTexture.free();
-	gWallTileTexture.free();
-	gSpaceTileTexture.free();
+	gWallTexture.free();
+	gSpaceTexture.free();
 
 	//Destroy window
 	SDL_DestroyRenderer(gRenderer);
@@ -145,7 +152,7 @@ void close(Tile* tiles[], Yummy* yummy[])
 bool setTiles(Tile* tiles[], Yummy* yummy[])
 {
 	//Success flag
-	bool tilesLoaded = true;
+	bool success = true;
 
     //The tile offsets
     int x = 0, y = 0;
@@ -156,63 +163,65 @@ bool setTiles(Tile* tiles[], Yummy* yummy[])
     //If the map couldn't be loaded
     if(!Map.is_open())
     {
-		printf( "Unable to load map file!\n" );
-		tilesLoaded = false;
+		printf("Unable to load map file!\n");
+		success = false;
     }
 	else
 	{
 		//Initialize the tiles
-		for(int i = 0; i < TOTAL_TILES; i++)
+		for (int i = 0; i < TOTAL_TILES; i++)
 		{
 			//Determines what kind of tile will be made
-			int tileType = -1;
+			int tileType;
 
 			//Read tile from map file
 			Map >> tileType;
 
 			//If the was a problem in reading the map
-			if(Map.fail())
+			if (Map.fail())
 			{
 				//Stop loading map
-				printf( "Error loading map: Unexpected end of file!\n" );
-				tilesLoaded = false;
+				printf("Error loading map: Unexpected end of file!\n");
+				success = false;
 				break;
 			}
 
 			//If the number is a valid tile number
-			if((tileType >= 0) && (tileType < TOTAL_TILE_TYPES))
+			if (((tileType >= 0) && (tileType < TOTAL_TILE_TYPES)) || tileType == BLANK_TILE)
 			{
 				tiles[i] = new Tile(x, y, tileType);
 
-				//Set big/small/no yummy for the space/wall tiles
+				//Set big/small yummy
 				switch (tileType)
-				{
+                {
+                case BLANK_TILE:
+                    yummy[i] = new Yummy(UNDEFINED_X, UNDEFINED_Y, NO_YUMMY);
+                    break;
                 case WALL_TILE:
                     yummy[i] = new Yummy(UNDEFINED_X, UNDEFINED_Y, NO_YUMMY);
                     break;
                 case SPACE_TILE:
-                    if (i == 161 || i == 176 || i == 566 || i == 581)
+                    if (i == 146 || i == 161 || i == 566 || i == 581)
                     {
-                        int _x = (tiles[i]->getBox().x - BIG_YUMMY_WIDTH) / 2;
-                        int _y = (tiles[i]->getBox().y - BIG_YUMMY_HEIGHT) / 2;
+                        int _x = tiles[i]->getBox().x + (TILE_WIDTH - BIG_YUMMY_WIDTH) / 2;
+                        int _y = tiles[i]->getBox().y + (TILE_HEIGHT - BIG_YUMMY_HEIGHT) / 2;
                         yummy[i] = new Yummy(_x, _y, BIG_YUMMY);
                     }
                     else
                     {
-                        int _x = (tiles[i]->getBox().x - SMALL_YUMMY_WIDTH) / 2;
-                        int _y = (tiles[i]->getBox().y - SMALL_YUMMY_HEIGHT) / 2;
+                        int _x = tiles[i]->getBox().x + (TILE_WIDTH - SMALL_YUMMY_WIDTH) / 2;
+                        int _y = tiles[i]->getBox().y + (TILE_HEIGHT - SMALL_YUMMY_HEIGHT) / 2;
                         yummy[i] = new Yummy(_x, _y, SMALL_YUMMY);
                     }
                     break;
-
-				}
+                }
 			}
 			//If we don't recognize the tile type
 			else
 			{
 				//Stop loading map
 				printf( "Error loading map: Invalid tile type at %d!\n", i );
-				tilesLoaded = false;
+				success = false;
 				break;
 			}
 
@@ -220,7 +229,7 @@ bool setTiles(Tile* tiles[], Yummy* yummy[])
 			x += TILE_WIDTH;
 
 			//If we've gone too far
-			if(x >= LEVEL_WIDTH)
+			if (x >= LEVEL_WIDTH)
 			{
 				//Move back
 				x = 0;
@@ -235,7 +244,7 @@ bool setTiles(Tile* tiles[], Yummy* yummy[])
     Map.close();
 
     //If the map was loaded fine
-    return tilesLoaded;
+    return success;
 }
 
 int main(int argc, char* args[])
@@ -251,7 +260,7 @@ int main(int argc, char* args[])
 		Tile* tileSet[TOTAL_TILES];
 
 		//The yummy
-        Yummy* yummySet[TOTAL_YUMMY];
+        Yummy* yummySet[TOTAL_TILES];
 
 		//Load media
 		if (!loadMedia(tileSet, yummySet))
@@ -275,7 +284,7 @@ int main(int argc, char* args[])
 			    //Check if the game has finished
 			    if (pacman.getYummy() <= 0)
                 {
-                    break;
+                    quit = true;
                 }
 
 				//Handle events on queue
@@ -316,10 +325,13 @@ int main(int argc, char* args[])
 					{
                     //Render space tiles along with big yummy and small yummy
                     case SPACE_TILE:
-                        tileSet[i]->render(gSpaceTileTexture, gRenderer);
+                        tileSet[i]->render(gSpaceTexture, gRenderer);
                         break;
                     case WALL_TILE:
-                        tileSet[i]->render(gWallTileTexture, gRenderer);
+                        tileSet[i]->render(gWallTexture, gRenderer);
+                        break;
+                    case BLANK_TILE:
+                        tileSet[i]->render(gBlankTexture, gRenderer);
                         break;
                     default:
                         break;
@@ -327,7 +339,7 @@ int main(int argc, char* args[])
 				}
 
 				//Render big yummy and small yummy
-				for (int i = 0; i < TOTAL_YUMMY; i++)
+				for (int i = 0; i < TOTAL_TILES; i++)
                 {
                     switch (yummySet[i]->getType())
                     {
@@ -339,6 +351,8 @@ int main(int argc, char* args[])
                         break;
                     case NO_YUMMY:
                         break;
+                    default:
+                        break;
                     }
                 }
 
@@ -347,6 +361,9 @@ int main(int argc, char* args[])
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
+
+				//Debug
+				printf("yummy left: %d\n", pacman.getYummy());
 			}
 		}
 

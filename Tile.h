@@ -6,18 +6,19 @@
 #include "Texture.h"
 
 //Tile constants
-static const int TILE_WIDTH = 20;
-static const int TILE_HEIGHT = 20;
-static const int TOTAL_TILES = 868; //868 = 28*31
-static const int TOTAL_TILE_TYPES = 2;
+const int TILE_WIDTH = 20;
+const int TILE_HEIGHT = 20;
+const int TOTAL_TILES = 868; // 868 = 28*31
+const int TOTAL_TILE_TYPES = 2;
 
 //Types of tiles
-static const int SPACE_TILE = 0;
-static const int WALL_TILE = 1;
+const int SPACE_TILE = 0;
+const int WALL_TILE = 1;
+const int BLANK_TILE = 9;
 
 //The dimensions of the level
-static const int LEVEL_WIDTH = 560;
-static const int LEVEL_HEIGHT = 620;
+const int LEVEL_WIDTH = 560;
+const int LEVEL_HEIGHT = 620;
 
 //The tile
 class Tile

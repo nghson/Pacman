@@ -21,8 +21,8 @@ Yummy::Yummy(int _x, int _y, int _mType)
         mBox.h = BIG_YUMMY_HEIGHT;
         break;
     case NO_YUMMY:
-        mBox.x = _x;
-        mBox.y = _y;
+        mBox.x = UNDEFINED_X;
+        mBox.y = UNDEFINED_Y;
         mBox.w = UNDEFINED_W;
         mBox.h = UNDEFINED_H;
         break;

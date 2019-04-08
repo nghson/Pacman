@@ -3,7 +3,6 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <iostream>
 #include <stdio.h>
 #include <string>
 #include <fstream>
@@ -36,9 +35,10 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 //Textures
+LTexture gBlankTexture;
 LTexture gPacmanTexture;
-LTexture gWallTileTexture;
-LTexture gSpaceTileTexture;
+LTexture gWallTexture;
+LTexture gSpaceTexture;
 LTexture gSmallYummyTexture;
 LTexture gBigYummyTexture;
 

@@ -27,7 +27,7 @@ public:
     static const int PACMAN_HEIGHT = 20;
 
     //Maximum axis velocity of pacman
-    static const int PACMAN_VEL = 10;
+    static const int PACMAN_VEL = 2;
 
     //Initializes the variables
     Pacman(int _x, int _y);

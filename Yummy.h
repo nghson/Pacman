@@ -2,7 +2,6 @@
 #define YUMMY_H
 
 #include <SDL2/SDL.h>
-#include <climits>
 #include "CheckCollision.h"
 #include "Texture.h"
 
@@ -18,13 +17,13 @@ const int NO_YUMMY = 1;
 const int BIG_YUMMY = 2;
 
 //Undefined position and size of yummy (along with NO_YUMMY)
-const int UNDEFINED_X = INT_MIN;
-const int UNDEFINED_Y = INT_MIN;
+const int UNDEFINED_X = 0;
+const int UNDEFINED_Y = 0;
 const int UNDEFINED_W = 0;
 const int UNDEFINED_H = 0;
 
 //Number of yummy = number of space tiles
-const int TOTAL_YUMMY = 360;
+const int TOTAL_YUMMY = 300;
 
 //The yummy
 class Yummy
