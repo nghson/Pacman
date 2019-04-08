@@ -21,13 +21,13 @@ const int SCREEN_HEIGHT = 620;
 bool init();
 
 //Loads media
-bool loadMedia( Tile* tiles[] );
+bool loadMedia(Tile* tiles[]);
 
 //Frees media and shuts down SDL
-void close( Tile* tiles[] );
+void close(Tile* tiles[]);
 
-//Sets tiles from tile map
-bool setTiles( Tile *tiles[] );
+//Sets tiles for space, wall and yummy
+bool setTiles(Tile *tiles[], Yummy* yummy[]);
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;

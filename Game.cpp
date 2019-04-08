@@ -6,7 +6,7 @@ bool init()
 	bool success = true;
 
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -20,8 +20,8 @@ bool init()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-		if(gWindow == NULL)
+		gWindow = SDL_CreateWindow("PACMAN", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		if (gWindow == NULL)
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
@@ -29,8 +29,8 @@ bool init()
 		else
 		{
 			//Create renderer for window
-			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-			if(gRenderer == NULL)
+			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			if (gRenderer == NULL)
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 				success = false;
@@ -38,13 +38,13 @@ bool init()
 			else
 			{
 				//Initialize renderer color
-				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
 				//Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
-				if( !( IMG_Init( imgFlags ) & imgFlags ) )
+				if (!( IMG_Init(imgFlags) & imgFlags))
 				{
-					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 					success = false;
 				}
 			}
@@ -94,15 +94,12 @@ bool loadMedia(Tile* tiles[], Yummy* yummy[])
 		success = false;
     }
 
-	//Load tile map
-	if (!setTiles(tiles))
+	//Load tiles: space, wall, yummy
+	if (!setTiles(tiles, yummy))
 	{
 		printf("Failed to load tile set!\n");
 		success = false;
 	}
-
-	//Load yummy
-	setYummy(tiles, yummy);
 
 	return success;
 }
@@ -145,7 +142,7 @@ void close(Tile* tiles[], Yummy* yummy[])
 	SDL_Quit();
 }
 
-bool setTiles(Tile* tiles[])
+bool setTiles(Tile* tiles[], Yummy* yummy[])
 {
 	//Success flag
 	bool tilesLoaded = true;
@@ -186,6 +183,29 @@ bool setTiles(Tile* tiles[])
 			if((tileType >= 0) && (tileType < TOTAL_TILE_TYPES))
 			{
 				tiles[i] = new Tile(x, y, tileType);
+
+				//Set big/small/no yummy for the space/wall tiles
+				switch (tileType)
+				{
+                case WALL_TILE:
+                    yummy[i] = new Yummy(UNDEFINED_X, UNDEFINED_Y, NO_YUMMY);
+                    break;
+                case SPACE_TILE:
+                    if (i == 161 || i == 176 || i == 566 || i == 581)
+                    {
+                        int _x = (tiles[i]->getBox().x - BIG_YUMMY_WIDTH) / 2;
+                        int _y = (tiles[i]->getBox().y - BIG_YUMMY_HEIGHT) / 2;
+                        yummy[i] = new Yummy(_x, _y, BIG_YUMMY);
+                    }
+                    else
+                    {
+                        int _x = (tiles[i]->getBox().x - SMALL_YUMMY_WIDTH) / 2;
+                        int _y = (tiles[i]->getBox().y - SMALL_YUMMY_HEIGHT) / 2;
+                        yummy[i] = new Yummy(_x, _y, SMALL_YUMMY);
+                    }
+                    break;
+
+				}
 			}
 			//If we don't recognize the tile type
 			else
@@ -216,36 +236,6 @@ bool setTiles(Tile* tiles[])
 
     //If the map was loaded fine
     return tilesLoaded;
-}
-
-void setYummy(Tile* tiles[], Yummy* yummy[])
-{
-    /*
-    There are 4 big yummy
-    Their position relative to the space and wall tiles:
-    tiles[161], tiles[176], tiles[566], tiles[581]
-    The rests are small yummy
-    */
-    int _i = 0;
-    for (int i = 0; i < TOTAL_TILES; i++)
-    {
-        if (tiles[i]->getType() == SPACE_TILE)
-        {
-            if (i == 161 || i == 176 || i == 566 || i == 581)
-            {
-                int _x = (tiles[i]->getBox().x - BIG_YUMMY_WIDTH) / 2;
-                int _y = (tiles[i]->getBox().y - BIG_YUMMY_HEIGHT) / 2;
-                yummy[_i] = new Yummy(_x, _y, BIG_YUMMY);
-            }
-            else
-            {
-                int _x = (tiles[i]->getBox().x - SMALL_YUMMY_WIDTH) / 2;
-                int _y = (tiles[i]->getBox().y - SMALL_YUMMY_HEIGHT) / 2;
-                yummy[_i] = new Yummy(_x, _y, SMALL_YUMMY);
-            }
-            _i++;
-        }
-    }
 }
 
 int main(int argc, char* args[])
@@ -282,6 +272,12 @@ int main(int argc, char* args[])
 			//While application is running
 			while (!quit)
 			{
+			    //Check if the game has finished
+			    if (pacman.getYummy() <= 0)
+                {
+                    break;
+                }
+
 				//Handle events on queue
 				if (SDL_PollEvent(&e) != 0)
 				{
@@ -301,6 +297,13 @@ int main(int argc, char* args[])
 
                 //Move pacman
 				pacman.move(tileSet, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+				//Did pacman eat some yummy?
+                std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
+                for (std::vector<int>::iterator itr = eatenYummy.begin(); itr != eatenYummy.end(); itr++)
+                {
+                    yummySet[*itr]->deleteYummy();
+                }
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -333,6 +336,8 @@ int main(int argc, char* args[])
                         break;
                     case BIG_YUMMY:
                         yummySet[i]->render(gBigYummyTexture, gRenderer);
+                        break;
+                    case NO_YUMMY:
                         break;
                     }
                 }

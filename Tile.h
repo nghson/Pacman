@@ -5,24 +5,24 @@
 #include "CheckCollision.h"
 #include "Texture.h"
 
+//Tile constants
+static const int TILE_WIDTH = 20;
+static const int TILE_HEIGHT = 20;
+static const int TOTAL_TILES = 868; //868 = 28*31
+static const int TOTAL_TILE_TYPES = 2;
+
+//Types of tiles
+static const int SPACE_TILE = 0;
+static const int WALL_TILE = 1;
+
+//The dimensions of the level
+static const int LEVEL_WIDTH = 560;
+static const int LEVEL_HEIGHT = 620;
+
 //The tile
 class Tile
 {
 public:
-    //Types of tiles
-    static const int SPACE_TILE = 0;
-    static const int WALL_TILE = 1;
-
-    //The dimensions of the level
-    static const int LEVEL_WIDTH = 560;
-    static const int LEVEL_HEIGHT = 620;
-
-    //Tile constants
-    static const int TILE_WIDTH = 20;
-    static const int TILE_HEIGHT = 20;
-    static const int TOTAL_TILES = 868; //868 = 28*31
-    static const int TOTAL_TILE_TYPES = 2;
-
     //Initializes position and type
     Tile(int x, int y, int tileType);
 

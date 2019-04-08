@@ -14,6 +14,9 @@ Pacman::Pacman(int _x, int _y)
 
     //Initialize ePending
     ePending = NOT_MOVING;
+
+    //Initialize number of yummy
+    mYummy = TOTAL_YUMMY;
 }
 
 void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
@@ -226,13 +229,24 @@ void Pacman::handlePending(Tile* tiles[])
     }
 }
 
-int Pacman::eatYummy(Yummy* yummy[])
+std::vector<int> Pacman::eatYummy(Yummy* yummy[])
 {
+    std::vector<int> eatenYummy;
+    //Check if pacman has eaten which yummy
     for (int i = 0; i < TOTAL_YUMMY; i++)
     {
         if (checkCollision(mBox, yummy[i]->getBox()))
         {
-            return i;
+            eatenYummy.push_back(i);
         }
     }
+    //Update the number of yummy left
+    mYummy -= eatenYummy.size();
+
+    return eatenYummy;
+}
+
+int Pacman::getYummy()
+{
+    return mYummy;
 }

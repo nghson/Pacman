@@ -6,6 +6,7 @@
 #include "Tile.h"
 #include "Texture.h"
 #include "Yummy.h"
+#include "CheckCollision.h"
 
 //Pacman that will move around on the screen by keystrokes
 class Pacman
@@ -46,8 +47,11 @@ public:
     //Handle the pending event
     void handlePending(Tile* tiles[]);
 
-    //Eat yummy
-    SDL_Rect eatYummy()
+    //Get the number of yummy left
+    int getYummy();
+
+    //Pacman eats some yummy!
+    std::vector<int> eatYummy(Yummy* yummy[]);
 
 private:
     //Collision box of the pacman
@@ -58,6 +62,9 @@ private:
 
     //Pending keystroke, receiving values from the above enumeration
     int ePending;
+
+    //Number of yummy left
+    int mYummy;
 };
 
 #endif // PACMAN_H
