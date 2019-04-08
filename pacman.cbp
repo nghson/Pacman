@@ -41,6 +41,8 @@
 		<Unit filename="Texture.h" />
 		<Unit filename="Tile.cpp" />
 		<Unit filename="Tile.h" />
+		<Unit filename="Yummy.cpp" />
+		<Unit filename="Yummy.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

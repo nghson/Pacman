@@ -5,38 +5,42 @@
 #include "CheckCollision.h"
 #include "Texture.h"
 
-//The dimensions of the level
-const int LEVEL_WIDTH = 560;
-const int LEVEL_HEIGHT = 620;
-
-//Tile constants
-const int TILE_WIDTH = 20;
-const int TILE_HEIGHT = 20;
-const int TOTAL_TILES = 868; //868 = 28*31
-const int TOTAL_TILE_TYPES = 2;
-
 //The tile
 class Tile
 {
-    public:
-		//Initializes position and type
-		Tile(int x, int y, int tileType);
+public:
+    //Types of tiles
+    static const int SPACE_TILE = 0;
+    static const int WALL_TILE = 1;
 
-		//Shows the tile
-		void render(LTexture& gTileTexture, SDL_Renderer* gRenderer);
+    //The dimensions of the level
+    static const int LEVEL_WIDTH = 560;
+    static const int LEVEL_HEIGHT = 620;
 
-		//Get the tile type
-		int getType();
+    //Tile constants
+    static const int TILE_WIDTH = 20;
+    static const int TILE_HEIGHT = 20;
+    static const int TOTAL_TILES = 868; //868 = 28*31
+    static const int TOTAL_TILE_TYPES = 2;
 
-		//Get the collision box
-		SDL_Rect getBox();
+    //Initializes position and type
+    Tile(int x, int y, int tileType);
 
-    private:
-		//The attributes of the tile
-		SDL_Rect mBox;
+    //Shows the tile
+    void render(LTexture& gTileTexture, SDL_Renderer* gRenderer);
 
-		//The tile type
-		int mType;
+    //Get the tile type
+    int getType();
+
+    //Get the collision box
+    SDL_Rect getBox();
+
+private:
+    //The attributes of the tile
+    SDL_Rect mBox;
+
+    //The tile type
+    int mType;
 };
 
 //Checks collision box against set of tiles

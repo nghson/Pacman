@@ -54,7 +54,7 @@ bool init()
 	return success;
 }
 
-bool loadMedia(Tile* tiles[])
+bool loadMedia(Tile* tiles[], Yummy* yummy[])
 {
 	//Loading success flag
 	bool success = true;
@@ -101,20 +101,33 @@ bool loadMedia(Tile* tiles[])
 		success = false;
 	}
 
+	//Load yummy
+	setYummy(tiles, yummy);
+
 	return success;
 }
 
-void close(Tile* tiles[])
+void close(Tile* tiles[], Yummy* yummy[])
 {
-	//Deallocate tiles
-	for( int i = 0; i < TOTAL_TILES; ++i )
+	//Deallocate space and wall tiles
+	for (int i = 0; i < TOTAL_TILES; i++)
 	{
-		 if( tiles[i] == NULL )
+		 if (tiles[i] != NULL)
 		 {
 			delete tiles[i];
 			tiles[i] = NULL;
 		 }
 	}
+
+    //Deallocate yummy
+    for (int i = 0; i < TOTAL_YUMMY; i++)
+    {
+        if (yummy[i] != NULL)
+        {
+            delete yummy[i];
+            yummy[i] = NULL;
+        }
+    }
 
 	//Free loaded images
 	gPacmanTexture.free();
@@ -132,7 +145,7 @@ void close(Tile* tiles[])
 	SDL_Quit();
 }
 
-bool setTiles( Tile* tiles[] )
+bool setTiles(Tile* tiles[])
 {
 	//Success flag
 	bool tilesLoaded = true;
@@ -152,7 +165,7 @@ bool setTiles( Tile* tiles[] )
 	else
 	{
 		//Initialize the tiles
-		for( int i = 0; i < TOTAL_TILES; ++i )
+		for(int i = 0; i < TOTAL_TILES; i++)
 		{
 			//Determines what kind of tile will be made
 			int tileType = -1;
@@ -205,22 +218,55 @@ bool setTiles( Tile* tiles[] )
     return tilesLoaded;
 }
 
+void setYummy(Tile* tiles[], Yummy* yummy[])
+{
+    /*
+    There are 4 big yummy
+    Their position relative to the space and wall tiles:
+    tiles[161], tiles[176], tiles[566], tiles[581]
+    The rests are small yummy
+    */
+    int _i = 0;
+    for (int i = 0; i < TOTAL_TILES; i++)
+    {
+        if (tiles[i]->getType() == SPACE_TILE)
+        {
+            if (i == 161 || i == 176 || i == 566 || i == 581)
+            {
+                int _x = (tiles[i]->getBox().x - BIG_YUMMY_WIDTH) / 2;
+                int _y = (tiles[i]->getBox().y - BIG_YUMMY_HEIGHT) / 2;
+                yummy[_i] = new Yummy(_x, _y, BIG_YUMMY);
+            }
+            else
+            {
+                int _x = (tiles[i]->getBox().x - SMALL_YUMMY_WIDTH) / 2;
+                int _y = (tiles[i]->getBox().y - SMALL_YUMMY_HEIGHT) / 2;
+                yummy[_i] = new Yummy(_x, _y, SMALL_YUMMY);
+            }
+            _i++;
+        }
+    }
+}
+
 int main(int argc, char* args[])
 {
 	//Start up SDL and create window
-	if( !init() )
+	if(!init())
 	{
 		printf( "Failed to initialize!\n" );
 	}
 	else
 	{
-		//The level tiles
+		//The space and wall tiles
 		Tile* tileSet[TOTAL_TILES];
 
+		//The yummy
+        Yummy* yummySet[TOTAL_YUMMY];
+
 		//Load media
-		if( !loadMedia( tileSet ) )
+		if (!loadMedia(tileSet, yummySet))
 		{
-			printf( "Failed to load media!\n" );
+			printf("Failed to load media!\n");
 		}
 		else
 		{
@@ -240,7 +286,7 @@ int main(int argc, char* args[])
 				if (SDL_PollEvent(&e) != 0)
 				{
 					//User requests quit
-					if(e.type == SDL_QUIT)
+					if (e.type == SDL_QUIT)
 					{
 						quit = true;
 					}
@@ -260,21 +306,36 @@ int main(int argc, char* args[])
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				//Render level
-				for(int i = 0; i < TOTAL_TILES; ++i)
+				//Render space tiles and wall tiles
+				for (int i = 0; i < TOTAL_TILES; i++)
 				{
 					switch (tileSet[i]->getType())
 					{
-                    case 0:
+                    //Render space tiles along with big yummy and small yummy
+                    case SPACE_TILE:
                         tileSet[i]->render(gSpaceTileTexture, gRenderer);
                         break;
-                    case 1:
+                    case WALL_TILE:
                         tileSet[i]->render(gWallTileTexture, gRenderer);
                         break;
                     default:
                         break;
 					}
 				}
+
+				//Render big yummy and small yummy
+				for (int i = 0; i < TOTAL_YUMMY; i++)
+                {
+                    switch (yummySet[i]->getType())
+                    {
+                    case SMALL_YUMMY:
+                        yummySet[i]->render(gSmallYummyTexture, gRenderer);
+                        break;
+                    case BIG_YUMMY:
+                        yummySet[i]->render(gBigYummyTexture, gRenderer);
+                        break;
+                    }
+                }
 
 				//Render pacman
 				pacman.render(gPacmanTexture, gRenderer);
@@ -285,7 +346,7 @@ int main(int argc, char* args[])
 		}
 
 		//Free resources and close SDL
-		close(tileSet);
+		close(tileSet, yummySet);
 	}
 	return 0;
 }

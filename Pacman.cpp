@@ -225,3 +225,14 @@ void Pacman::handlePending(Tile* tiles[])
         }
     }
 }
+
+int Pacman::eatYummy(Yummy* yummy[])
+{
+    for (int i = 0; i < TOTAL_YUMMY; i++)
+    {
+        if (checkCollision(mBox, yummy[i]->getBox()))
+        {
+            return i;
+        }
+    }
+}

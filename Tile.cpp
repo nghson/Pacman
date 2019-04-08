@@ -1,6 +1,6 @@
 #include "Tile.h"
 
-Tile::Tile( int x, int y, int tileType )
+Tile::Tile(int x, int y, int tileType)
 {
     //Get the offsets
     mBox.x = x;
@@ -32,13 +32,13 @@ SDL_Rect Tile::getBox()
 bool touchesWall(SDL_Rect box, Tile* tiles[])
 {
     //Go through the tiles
-    for(int i = 0; i < TOTAL_TILES; i++)
+    for (int i = 0; i < TOTAL_TILES; i++)
     {
         //If the tile is a wall type tile
-        if(tiles[i]->getType() == 1)
+        if (tiles[i]->getType() == 1)
         {
             //If the collision box touches the wall tile
-            if(checkCollision(box, tiles[i]->getBox()))
+            if (checkCollision(box, tiles[i]->getBox()))
             {
                 return true;
             }

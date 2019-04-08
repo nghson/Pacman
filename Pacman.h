@@ -2,8 +2,10 @@
 #define PACMAN_H
 
 #include <SDL2/SDL.h>
+#include <vector>
 #include "Tile.h"
 #include "Texture.h"
+#include "Yummy.h"
 
 //Pacman that will move around on the screen by keystrokes
 class Pacman
@@ -24,7 +26,7 @@ public:
     static const int PACMAN_HEIGHT = 20;
 
     //Maximum axis velocity of pacman
-    static const int PACMAN_VEL = 2;
+    static const int PACMAN_VEL = 10;
 
     //Initializes the variables
     Pacman(int _x, int _y);
@@ -43,6 +45,9 @@ public:
 
     //Handle the pending event
     void handlePending(Tile* tiles[]);
+
+    //Eat yummy
+    SDL_Rect eatYummy()
 
 private:
     //Collision box of the pacman

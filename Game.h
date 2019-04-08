@@ -11,6 +11,7 @@
 #include "Tile.h"
 #include "Pacman.h"
 #include "CheckCollision.h"
+#include "Yummy.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 560;
