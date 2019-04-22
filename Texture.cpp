@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-LTexture::LTexture()
+Texture::Texture()
 {
 	//Initialize
 	mTexture = NULL;
@@ -8,13 +8,13 @@ LTexture::LTexture()
 	mHeight = 0;
 }
 
-LTexture::~LTexture()
+Texture::~Texture()
 {
 	//Deallocate
 	free();
 }
 
-bool LTexture::loadFromFile(SDL_Renderer* gRenderer, std::string path)
+bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)
 {
 	//Get rid of preexisting texture
 	free();
@@ -23,21 +23,18 @@ bool LTexture::loadFromFile(SDL_Renderer* gRenderer, std::string path)
 	SDL_Texture* newTexture = NULL;
 
 	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	if( loadedSurface == NULL )
+	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+	if (loadedSurface == NULL)
 	{
-		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
 	}
 	else
 	{
-		//Color key image
-		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
-
 		//Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
-		if( newTexture == NULL )
+        newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+		if (newTexture == NULL)
 		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
 		else
 		{
@@ -47,41 +44,41 @@ bool LTexture::loadFromFile(SDL_Renderer* gRenderer, std::string path)
 		}
 
 		//Get rid of old loaded surface
-		SDL_FreeSurface( loadedSurface );
+		SDL_FreeSurface(loadedSurface);
 	}
 
-	//Return success
 	mTexture = newTexture;
+
 	return mTexture != NULL;
 }
 
-void LTexture::free()
+void Texture::free()
 {
 	//Free texture if it exists
-	if( mTexture != NULL )
+	if (mTexture != NULL)
 	{
-		SDL_DestroyTexture( mTexture );
+		SDL_DestroyTexture(mTexture);
 		mTexture = NULL;
 		mWidth = 0;
 		mHeight = 0;
 	}
 }
 
-void LTexture::render(int x, int y, SDL_Renderer* gRenderer)
+void Texture::render(int x, int y, SDL_Renderer* renderer)
 {
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	SDL_Rect renderQuad = {x, y, mWidth, mHeight};
 
 	//Render to screen
-	SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);
+	SDL_RenderCopy(renderer, mTexture, NULL, &renderQuad);
 }
 
-int LTexture::getWidth()
+int Texture::getWidth()
 {
 	return mWidth;
 }
 
-int LTexture::getHeight()
+int Texture::getHeight()
 {
 	return mHeight;
 }

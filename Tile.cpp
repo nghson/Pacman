@@ -14,9 +14,9 @@ Tile::Tile(int x, int y, int tileType)
     mType = tileType;
 }
 
-void Tile::render(LTexture& gTileTexture, SDL_Renderer* gRenderer)
+void Tile::render(Texture& tileTexture, SDL_Renderer* renderer)
 {
-    gTileTexture.render(mBox.x, mBox.y, gRenderer);
+    tileTexture.render(mBox.x, mBox.y, renderer);
 }
 
 int Tile::getType()
@@ -48,3 +48,52 @@ bool touchesWall(SDL_Rect box, Tile* tiles[])
     //If no wall tiles were touched
     return false;
 }
+
+bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[])
+{
+    switch (direction)
+    {
+        case MOVING_LEFT:
+            box.x -= vel;
+            if (touchesWall(box, tiles))
+            {
+                //move back
+                box.x += vel;
+                return false;
+            }
+            box.x += vel;
+            break;
+        case MOVING_RIGHT:
+            box.x += vel;
+            if (touchesWall(box, tiles))
+            {
+                //move back
+                box.x -= vel;
+                return false;
+            }
+            box.x -= vel;
+            break;
+        case MOVING_UP:
+            box.y -= vel;
+            if (touchesWall(box, tiles))
+            {
+                //move back
+                box.y += vel;
+                return false;
+            }
+            box.y += vel;
+            break;
+        case MOVING_DOWN:
+            box.y += vel;
+            if (touchesWall(box, tiles))
+            {
+                //move back
+                box.y -= vel;
+                return false;
+            }
+            box.y -= vel;
+            break;
+        }
+    return true;
+}
+

@@ -6,35 +6,35 @@
 #include <SDL2/SDL_image.h>
 
 //Texture wrapper class
-class LTexture
+class Texture
 {
-	public:
-		//Initializes variables
-		LTexture();
+public:
+    //Initializes variables
+    Texture();
 
-		//Deallocates memory
-		~LTexture();
+    //Deallocates memory
+    ~Texture();
 
-		//Loads image at specified path
-		bool loadFromFile(SDL_Renderer* gRenderer, std::string path);
+    //Loads image at specified path
+    bool loadFromFile(SDL_Renderer* renderer, std::string path);
 
-		//Deallocates texture
-		void free();
+    //Deallocates texture
+    void free();
 
-		//Renders texture at given point
-		void render(int x, int y, SDL_Renderer* gRenderer);
+    //Renders texture at given point
+    void render(int x, int y, SDL_Renderer* renderer);
 
-		//Gets image dimensions
-		int getWidth();
-		int getHeight();
+    //Get image dimensions
+    int getWidth();
+    int getHeight();
 
-	private:
-		//The actual hardware texture
-		SDL_Texture* mTexture;
+private:
+    //The actual hardware texture
+    SDL_Texture* mTexture;
 
-		//Image dimensions
-		int mWidth;
-		int mHeight;
+    //Image dimensions
+    int mWidth;
+    int mHeight;
 };
 
 #endif // TEXTURE_H

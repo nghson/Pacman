@@ -6,7 +6,7 @@ bool init()
 	bool success = true;
 
 	//Initialize SDL
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -14,14 +14,14 @@ bool init()
 	else
 	{
 		//Set texture filtering to linear
-		if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
+		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 		{
 			printf( "Warning: Linear texture filtering not enabled!" );
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow("PACMAN", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-		if (gWindow == NULL)
+		window = SDL_CreateWindow("PACMAN", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		if (window == NULL)
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
@@ -29,8 +29,8 @@ bool init()
 		else
 		{
 			//Create renderer for window
-			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-			if (gRenderer == NULL)
+			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			if (renderer == NULL)
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 				success = false;
@@ -38,9 +38,9 @@ bool init()
 			else
 			{
 				//Initialize renderer color
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-				//Initialize PNG loading
+				//Initialize IMG loading
 				int imgFlags = IMG_INIT_PNG;
 				if (!( IMG_Init(imgFlags) & imgFlags))
 				{
@@ -60,48 +60,48 @@ bool loadMedia(Tile* tiles[], Yummy* yummy[])
 	bool success = true;
 
 	//Load blank texture
-	if (!gBlankTexture.loadFromFile(gRenderer, "test/blank.bmp"))
+	if (!blankTexture.loadFromFile(renderer, "test/blank.bmp"))
     {
         printf("Failed to load blank texture!\n");
         success = false;
     }
 
-	//Load dot texture
-	if (!gPacmanTexture.loadFromFile(gRenderer, "test/pacman.bmp"))
+	//Load pacman texture
+	if (!pacmanTexture.loadFromFile(renderer, "test/pacman.bmp"))
 	{
 		printf("Failed to load pacman texture!\n");
 		success = false;
 	}
 
 	//Load wall tile texture
-	if (!gWallTexture.loadFromFile(gRenderer, "test/wall.bmp"))
+	if (!wallTexture.loadFromFile(renderer, "test/wall.bmp"))
 	{
 		printf("Failed to load wall tile texture!\n");
 		success = false;
 	}
 
     //Load space tile texture
-    if (!gSpaceTexture.loadFromFile(gRenderer, "test/space.bmp"))
+    if (!spaceTexture.loadFromFile(renderer, "test/space.bmp"))
     {
         printf("Failed to load space tile texture!\n");
         success = false;
     }
 
 	//Load small yummy texture
-	if (!gSmallYummyTexture.loadFromFile(gRenderer, "test/smallyummy.bmp"))
+	if (!smallYummyTexture.loadFromFile(renderer, "test/smallyummy.bmp"))
     {
         printf("Failed to load small yummy texture!\n");
         success = false;
     }
 
     //Load big yummy texture
-    if (!gBigYummyTexture.loadFromFile(gRenderer, "test/bigyummy.bmp"))
+    if (!bigYummyTexture.loadFromFile(renderer, "test/bigyummy.bmp"))
     {
         printf("Failed to load big yummy texture!\n");
         success = false;
     }
 
-	//Load tiles: space, wall, yummy
+	//Set tiles: space, wall, yummy
 	if (!setTiles(tiles, yummy))
 	{
 		printf("Failed to load tile set!\n");
@@ -134,15 +134,16 @@ void close(Tile* tiles[], Yummy* yummy[])
     }
 
 	//Free loaded images
-	gPacmanTexture.free();
-	gWallTexture.free();
-	gSpaceTexture.free();
+	blankTexture.free();
+	pacmanTexture.free();
+	wallTexture.free();
+	spaceTexture.free();
 
 	//Destroy window
-	SDL_DestroyRenderer(gRenderer);
-	SDL_DestroyWindow(gWindow);
-	gWindow = NULL;
-	gRenderer = NULL;
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	window = NULL;
+	renderer = NULL;
 
 	//Quit SDL subsystems
 	IMG_Quit();
@@ -315,8 +316,8 @@ int main(int argc, char* args[])
                 }
 
 				//Clear screen
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderClear(gRenderer);
+				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_RenderClear(renderer);
 
 				//Render space tiles and wall tiles
 				for (int i = 0; i < TOTAL_TILES; i++)
@@ -325,13 +326,13 @@ int main(int argc, char* args[])
 					{
                     //Render space tiles along with big yummy and small yummy
                     case SPACE_TILE:
-                        tileSet[i]->render(gSpaceTexture, gRenderer);
+                        tileSet[i]->render(spaceTexture, renderer);
                         break;
                     case WALL_TILE:
-                        tileSet[i]->render(gWallTexture, gRenderer);
+                        tileSet[i]->render(wallTexture, renderer);
                         break;
                     case BLANK_TILE:
-                        tileSet[i]->render(gBlankTexture, gRenderer);
+                        tileSet[i]->render(blankTexture, renderer);
                         break;
                     default:
                         break;
@@ -344,10 +345,10 @@ int main(int argc, char* args[])
                     switch (yummySet[i]->getType())
                     {
                     case SMALL_YUMMY:
-                        yummySet[i]->render(gSmallYummyTexture, gRenderer);
+                        yummySet[i]->render(smallYummyTexture, renderer);
                         break;
                     case BIG_YUMMY:
-                        yummySet[i]->render(gBigYummyTexture, gRenderer);
+                        yummySet[i]->render(bigYummyTexture, renderer);
                         break;
                     case NO_YUMMY:
                         break;
@@ -357,13 +358,10 @@ int main(int argc, char* args[])
                 }
 
 				//Render pacman
-				pacman.render(gPacmanTexture, gRenderer);
+				pacman.render(pacmanTexture, renderer);
 
 				//Update screen
-				SDL_RenderPresent(gRenderer);
-
-				//Debug
-				printf("yummy left: %d\n", pacman.getYummy());
+				SDL_RenderPresent(renderer);
 			}
 		}
 

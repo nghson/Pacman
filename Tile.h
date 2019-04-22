@@ -28,7 +28,7 @@ public:
     Tile(int x, int y, int tileType);
 
     //Shows the tile
-    void render(LTexture& gTileTexture, SDL_Renderer* gRenderer);
+    void render(Texture& tileTexture, SDL_Renderer* renderer);
 
     //Get the tile type
     int getType();
@@ -46,5 +46,8 @@ private:
 
 //Checks collision box against set of tiles
 bool touchesWall(SDL_Rect box, Tile* tiles[]);
+
+//Can the object move in the provided direction?
+bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[]);
 
 #endif // TILE_H

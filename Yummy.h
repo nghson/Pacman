@@ -39,7 +39,7 @@ public:
     Yummy(int _x, int _y, int _mType);
 
     //Shows the yummy
-    void render(LTexture& gTileTexture, SDL_Renderer* gRenderer);
+    void render(Texture& yummyTexture, SDL_Renderer* renderer);
 
     //Get the yummy type
     int getType();

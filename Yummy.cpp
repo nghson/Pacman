@@ -29,9 +29,9 @@ Yummy::Yummy(int _x, int _y, int _mType)
     }
 }
 
-void Yummy::render(LTexture& gTileTexture, SDL_Renderer* gRenderer)
+void Yummy::render(Texture& yummyTexture, SDL_Renderer* renderer)
 {
-    gTileTexture.render(mBox.x, mBox.y, gRenderer);
+    yummyTexture.render(mBox.x, mBox.y, renderer);
 
 }
 

@@ -51,58 +51,10 @@ void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
     }
 }
 
-void Pacman::render(LTexture& gPacmanTexture, SDL_Renderer* gRenderer)
+void Pacman::render(Texture& pacmanTexture, SDL_Renderer* renderer)
 {
-    //Show the dot
-	gPacmanTexture.render(mBox.x, mBox.y, gRenderer);
-}
-
-bool Pacman::canMove(int direction, Tile* tiles[])
-{
-    switch (direction)
-    {
-        case MOVING_LEFT:
-            mBox.x -= PACMAN_VEL;
-            if (touchesWall(mBox, tiles))
-            {
-                //move back
-                mBox.x += PACMAN_VEL;
-                return false;
-            }
-            mBox.x += PACMAN_VEL;
-            break;
-        case MOVING_RIGHT:
-            mBox.x += PACMAN_VEL;
-            if (touchesWall(mBox, tiles))
-            {
-                //move back
-                mBox.x -= PACMAN_VEL;
-                return false;
-            }
-            mBox.x -= PACMAN_VEL;
-            break;
-        case MOVING_UP:
-            mBox.y -= PACMAN_VEL;
-            if (touchesWall(mBox, tiles))
-            {
-                //move back
-                mBox.y += PACMAN_VEL;
-                return false;
-            }
-            mBox.y += PACMAN_VEL;
-            break;
-        case MOVING_DOWN:
-            mBox.y += PACMAN_VEL;
-            if (touchesWall(mBox, tiles))
-            {
-                //move back
-                mBox.y -= PACMAN_VEL;
-                return false;
-            }
-            mBox.y -= PACMAN_VEL;
-            break;
-        }
-    return true;
+    //Show the pacman
+	pacmanTexture.render(mBox.x, mBox.y, renderer);
 }
 
 void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
@@ -114,7 +66,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
         switch (e.key.keysym.sym)
         {
         case SDLK_UP:
-            if (canMove(MOVING_UP, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_UP, tiles))
             {
                 mVelY = -PACMAN_VEL;
                 mVelX = 0;
@@ -128,7 +80,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_DOWN:
-            if (canMove(MOVING_DOWN, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_DOWN, tiles))
             {
                 mVelY = PACMAN_VEL;
                 mVelX = 0;
@@ -142,7 +94,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_LEFT:
-            if (canMove(MOVING_LEFT, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_LEFT, tiles))
             {
                 mVelX = -PACMAN_VEL;
                 mVelY = 0;
@@ -156,7 +108,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_RIGHT:
-            if (canMove(MOVING_RIGHT, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_RIGHT, tiles))
             {
                 mVelX = PACMAN_VEL;
                 mVelY = 0;
@@ -181,7 +133,7 @@ void Pacman::handlePending(Tile* tiles[])
         switch (ePending)
         {
         case MOVING_UP:
-            if (canMove(MOVING_UP, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_UP, tiles))
             {
                 mVelY = -PACMAN_VEL;
                 mVelX = 0;
@@ -190,7 +142,7 @@ void Pacman::handlePending(Tile* tiles[])
             }
             break;
         case MOVING_DOWN:
-            if (canMove(MOVING_DOWN, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_DOWN, tiles))
             {
                 mVelY = PACMAN_VEL;
                 mVelX = 0;
@@ -199,7 +151,7 @@ void Pacman::handlePending(Tile* tiles[])
             }
             break;
         case MOVING_LEFT:
-            if (canMove(MOVING_LEFT, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_LEFT, tiles))
             {
                 mVelX = -PACMAN_VEL;
                 mVelY = 0;
@@ -208,7 +160,7 @@ void Pacman::handlePending(Tile* tiles[])
             }
             break;
         case MOVING_RIGHT:
-            if (canMove(MOVING_RIGHT, tiles))
+            if (canMove(mBox, PACMAN_VEL, MOVING_RIGHT, tiles))
             {
                 mVelX = PACMAN_VEL;
                 mVelY = 0;
@@ -240,4 +192,9 @@ std::vector<int> Pacman::eatYummy(Yummy* yummy[])
 int Pacman::getYummy()
 {
     return mYummy;
+}
+
+SDL_Rect Pacman::getBox()
+{
+    return mBox;
 }

@@ -29,17 +29,17 @@ void close(Tile* tiles[]);
 bool setTiles(Tile *tiles[], Yummy* yummy[]);
 
 //The window we'll be rendering to
-SDL_Window* gWindow = NULL;
+SDL_Window* window = NULL;
 
 //The window renderer
-SDL_Renderer* gRenderer = NULL;
+SDL_Renderer* renderer = NULL;
 
 //Textures
-LTexture gBlankTexture;
-LTexture gPacmanTexture;
-LTexture gWallTexture;
-LTexture gSpaceTexture;
-LTexture gSmallYummyTexture;
-LTexture gBigYummyTexture;
+Texture blankTexture;
+Texture pacmanTexture;
+Texture wallTexture;
+Texture spaceTexture;
+Texture smallYummyTexture;
+Texture bigYummyTexture;
 
 #endif // GAME_H

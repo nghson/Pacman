@@ -39,10 +39,7 @@ public:
     void move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT);
 
     //Shows pacman on the screen
-    void render(LTexture& gDotTexture, SDL_Renderer* gRenderer);
-
-    //Can pacman move in the given direction? If not, maintain the current direction
-    bool canMove(int direction, Tile* tiles[]);
+    void render(Texture& pacmanTexture, SDL_Renderer* renderer);
 
     //Handle the pending event
     void handlePending(Tile* tiles[]);
@@ -52,6 +49,9 @@ public:
 
     //Pacman eats some yummy!
     std::vector<int> eatYummy(Yummy* yummy[]);
+
+    //Get box
+    SDL_Rect getBox();
 
 private:
     //Collision box of the pacman
