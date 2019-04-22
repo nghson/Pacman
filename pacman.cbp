@@ -39,6 +39,8 @@
 		<Unit filename="Ghost.h" />
 		<Unit filename="Pacman.cpp" />
 		<Unit filename="Pacman.h" />
+		<Unit filename="PathFinding.cpp" />
+		<Unit filename="PathFinding.h" />
 		<Unit filename="Texture.cpp" />
 		<Unit filename="Texture.h" />
 		<Unit filename="Tile.cpp" />
