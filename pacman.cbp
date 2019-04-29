@@ -31,16 +31,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="CheckCollision.cpp" />
-		<Unit filename="CheckCollision.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
 		<Unit filename="Ghost.cpp" />
 		<Unit filename="Ghost.h" />
+		<Unit filename="Main.cpp" />
 		<Unit filename="Pacman.cpp" />
 		<Unit filename="Pacman.h" />
-		<Unit filename="PathFinding.cpp" />
-		<Unit filename="PathFinding.h" />
 		<Unit filename="Texture.cpp" />
 		<Unit filename="Texture.h" />
 		<Unit filename="Tile.cpp" />

@@ -2,7 +2,6 @@
 #define TILE_H
 
 #include <SDL2/SDL.h>
-#include "CheckCollision.h"
 #include "Texture.h"
 
 //Tile constants
@@ -43,6 +42,9 @@ private:
     //The tile type
     int mType;
 };
+
+//Box collision detector
+bool checkCollision(SDL_Rect a, SDL_Rect b);
 
 //Checks collision box against set of tiles
 bool touchesWall(SDL_Rect box, Tile* tiles[]);

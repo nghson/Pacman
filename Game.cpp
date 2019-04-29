@@ -1,6 +1,6 @@
 #include "Game.h"
 
-bool init()
+bool Game::init()
 {
 	//Initialization flag
 	bool success = true;
@@ -54,7 +54,7 @@ bool init()
 	return success;
 }
 
-bool loadMedia(Tile* tiles[], Yummy* yummy[])
+bool Game::loadTexture()
 {
 	//Loading success flag
 	bool success = true;
@@ -101,17 +101,38 @@ bool loadMedia(Tile* tiles[], Yummy* yummy[])
         success = false;
     }
 
-	//Set tiles: space, wall, yummy
-	if (!setTiles(tiles, yummy))
-	{
-		printf("Failed to load tile set!\n");
-		success = false;
-	}
+    //Load blinky texture
+    if (!blinkyTexture.loadFromFile(renderer, "test/blinky.bmp"))
+    {
+        printf("Failed to load blinky texture!\n");
+        success = false;
+    }
+
+    //Load clyde texture
+    if (!clydeTexture.loadFromFile(renderer, "test/clyde.bmp"))
+    {
+        printf("Failed to load clyde texture!\n");
+        success = false;
+    }
+
+    //Load inky texture
+    if (!inkyTexture.loadFromFile(renderer, "test/inky.bmp"))
+    {
+        printf("Failed to load inky texture!\n");
+        success = false;
+    }
+
+    //Load pinky texture
+    if (!pinkyTexture.loadFromFile(renderer, "test/pinky.bmp"))
+    {
+        printf("Failed to load pinky texture!\n");
+        success = false;
+    }
 
 	return success;
 }
 
-void close(Tile* tiles[], Yummy* yummy[])
+void Game::close(Tile* tiles[], Yummy* yummy[])
 {
 	//Deallocate space and wall tiles
 	for (int i = 0; i < TOTAL_TILES; i++)
@@ -138,6 +159,12 @@ void close(Tile* tiles[], Yummy* yummy[])
 	pacmanTexture.free();
 	wallTexture.free();
 	spaceTexture.free();
+	smallYummyTexture.free();
+	bigYummyTexture.free();
+	blinkyTexture.free();
+	clydeTexture.free();
+	inkyTexture.free();
+	pinkyTexture.free();
 
 	//Destroy window
 	SDL_DestroyRenderer(renderer);
@@ -150,7 +177,7 @@ void close(Tile* tiles[], Yummy* yummy[])
 	SDL_Quit();
 }
 
-bool setTiles(Tile* tiles[], Yummy* yummy[])
+bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
 {
 	//Success flag
 	bool success = true;
@@ -248,7 +275,9 @@ bool setTiles(Tile* tiles[], Yummy* yummy[])
     return success;
 }
 
-int main(int argc, char* args[])
+
+
+void Game::play()
 {
 	//Start up SDL and create window
 	if(!init())
@@ -264,109 +293,146 @@ int main(int argc, char* args[])
         Yummy* yummySet[TOTAL_TILES];
 
 		//Load media
-		if (!loadMedia(tileSet, yummySet))
+		if (!loadTexture())
 		{
-			printf("Failed to load media!\n");
+			printf("Failed to load texture!\n");
 		}
 		else
 		{
-			//Main loop flag
-			bool quit = false;
+		    if (!setTiles(tileSet, yummySet))
+            {
+                printf("Failed to load tile set!\n");
+            }
+            else
+            {
+                //Main loop flag
+                bool quit = false;
 
-			//Event handler
-			SDL_Event e;
+                //Event handler
+                SDL_Event e;
 
-			//The pacman
-			Pacman pacman(TILE_WIDTH, TILE_HEIGHT);
+                //Initialize pacman
+                Pacman pacman(TILE_WIDTH, TILE_HEIGHT);
 
-			//While application is running
-			while (!quit)
-			{
-			    //Check if the game has finished
-			    if (pacman.getYummy() <= 0)
+                //Initialize ghosts
+                Ghost blinky(180, 220);
+//                Ghost clyde(360, 220);
+//                Ghost inky(180, 340);
+//                Ghost pinky(360, 340);
+
+                //While the user does not quit
+                while (!quit)
                 {
-                    quit = true;
-                }
-
-				//Handle events on queue
-				if (SDL_PollEvent(&e) != 0)
-				{
-					//User requests quit
-					if (e.type == SDL_QUIT)
-					{
-						quit = true;
-					}
-
-					//Handle input for the pacman and update velocity
-                    pacman.handleEvent(e, tileSet);
-				}
-				else
-                {
-                    pacman.handlePending(tileSet);
-                }
-
-                //Move pacman
-				pacman.move(tileSet, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-				//Did pacman eat some yummy?
-                std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
-                for (std::vector<int>::iterator itr = eatenYummy.begin(); itr != eatenYummy.end(); itr++)
-                {
-                    yummySet[*itr]->deleteYummy();
-                }
-
-				//Clear screen
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderClear(renderer);
-
-				//Render space tiles and wall tiles
-				for (int i = 0; i < TOTAL_TILES; i++)
-				{
-					switch (tileSet[i]->getType())
-					{
-                    //Render space tiles along with big yummy and small yummy
-                    case SPACE_TILE:
-                        tileSet[i]->render(spaceTexture, renderer);
-                        break;
-                    case WALL_TILE:
-                        tileSet[i]->render(wallTexture, renderer);
-                        break;
-                    case BLANK_TILE:
-                        tileSet[i]->render(blankTexture, renderer);
-                        break;
-                    default:
-                        break;
-					}
-				}
-
-				//Render big yummy and small yummy
-				for (int i = 0; i < TOTAL_TILES; i++)
-                {
-                    switch (yummySet[i]->getType())
+                    //Check if pacman wins
+                    if (pacman.win())
                     {
-                    case SMALL_YUMMY:
-                        yummySet[i]->render(smallYummyTexture, renderer);
-                        break;
-                    case BIG_YUMMY:
-                        yummySet[i]->render(bigYummyTexture, renderer);
-                        break;
-                    case NO_YUMMY:
-                        break;
-                    default:
-                        break;
+                        quit = true;
+                        printf("WON!\n");
                     }
+                    else
+                    {
+//                        if (pacman.lose(blinky) || pacman.lose(clyde) || pacman.lose(inky) || pacman.lose(pinky))
+                        if (pacman.lose(blinky))
+                        {
+                            quit = true;
+                            printf("LOST!\n");
+                        }
+                    }
+
+                    //Handle events on queue
+                    if (SDL_PollEvent(&e) != 0)
+                    {
+                        //User requests quit
+                        if (e.type == SDL_QUIT)
+                        {
+                            quit = true;
+                        }
+
+                        //Handle input for the pacman and update velocity
+                        pacman.handleEvent(e, tileSet);
+                    }
+                    else
+                    {
+                        pacman.handlePending(tileSet);
+                    }
+
+                    //Move pacman
+                    pacman.move(tileSet, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                    //Did pacman eat some yummy?
+                    std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
+                    for (std::vector<int>::iterator itr = eatenYummy.begin(); itr != eatenYummy.end(); itr++)
+                    {
+                        yummySet[*itr]->deleteYummy();
+                    }
+
+                    //Move ghost
+                    blinky.move(pacman.getPos(), tileSet);
+//                    clyde.move(pacman.getPos(), tileSet);
+//                    inky.move(pacman.getPos(), tileSet);
+//                    pinky.move(pacman.getPos(), tileSet);
+
+                    //Clear screen
+                    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                    SDL_RenderClear(renderer);
+
+                    //Render space tiles and wall tiles
+                    for (int i = 0; i < TOTAL_TILES; i++)
+                    {
+                        switch (tileSet[i]->getType())
+                        {
+                        //Render space tiles along with big yummy and small yummy
+                        case SPACE_TILE:
+                            tileSet[i]->render(spaceTexture, renderer);
+                            break;
+                        case WALL_TILE:
+                            tileSet[i]->render(wallTexture, renderer);
+                            break;
+                        case BLANK_TILE:
+                            tileSet[i]->render(blankTexture, renderer);
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+
+                    //Render big yummy and small yummy
+                    for (int i = 0; i < TOTAL_TILES; i++)
+                    {
+                        switch (yummySet[i]->getType())
+                        {
+                        case SMALL_YUMMY:
+                            yummySet[i]->render(smallYummyTexture, renderer);
+                            break;
+                        case BIG_YUMMY:
+                            yummySet[i]->render(bigYummyTexture, renderer);
+                            break;
+                        case NO_YUMMY:
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+
+                    //Render pacman
+                    pacman.render(pacmanTexture, renderer);
+
+                    //Render ghosts
+                    blinky.render(blinkyTexture, renderer);
+//                    clyde.render(clydeTexture, renderer);
+//                    inky.render(inkyTexture, renderer);
+//                    pinky.render(pinkyTexture, renderer);
+
+                    //Update screen
+                    SDL_RenderPresent(renderer);
+
+//                    //Debug
+//                    SDL_Delay(5000);
                 }
-
-				//Render pacman
-				pacman.render(pacmanTexture, renderer);
-
-				//Update screen
-				SDL_RenderPresent(renderer);
 			}
 		}
 
 		//Free resources and close SDL
 		close(tileSet, yummySet);
 	}
-	return 0;
 }

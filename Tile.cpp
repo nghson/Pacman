@@ -29,6 +29,51 @@ SDL_Rect Tile::getBox()
     return mBox;
 }
 
+bool checkCollision(SDL_Rect a, SDL_Rect b)
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+
+    //If any of the sides from A are inside of B
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+
+    //If none of the sides from A are inside B
+    return true;
+}
+
 bool touchesWall(SDL_Rect box, Tile* tiles[])
 {
     //Go through the tiles
@@ -53,27 +98,8 @@ bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[])
 {
     switch (direction)
     {
-        case MOVING_LEFT:
-            box.x -= vel;
-            if (touchesWall(box, tiles))
-            {
-                //move back
-                box.x += vel;
-                return false;
-            }
-            box.x += vel;
-            break;
-        case MOVING_RIGHT:
-            box.x += vel;
-            if (touchesWall(box, tiles))
-            {
-                //move back
-                box.x -= vel;
-                return false;
-            }
-            box.x -= vel;
-            break;
-        case MOVING_UP:
+        //MOVING_UP
+        case 0:
             box.y -= vel;
             if (touchesWall(box, tiles))
             {
@@ -83,7 +109,8 @@ bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[])
             }
             box.y += vel;
             break;
-        case MOVING_DOWN:
+        //MOVING_DOWN
+        case 1:
             box.y += vel;
             if (touchesWall(box, tiles))
             {
@@ -92,6 +119,28 @@ bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[])
                 return false;
             }
             box.y -= vel;
+            break;
+        //MOVING_LEFT
+        case 2:
+            box.x -= vel;
+            if (touchesWall(box, tiles))
+            {
+                //move back
+                box.x += vel;
+                return false;
+            }
+            box.x += vel;
+            break;
+        //MOVING_RIGHT
+        case 3:
+            box.x += vel;
+            if (touchesWall(box, tiles))
+            {
+                //move back
+                box.x -= vel;
+                return false;
+            }
+            box.x -= vel;
             break;
         }
     return true;

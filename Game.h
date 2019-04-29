@@ -9,37 +9,49 @@
 #include "Texture.h"
 #include "Tile.h"
 #include "Pacman.h"
-#include "CheckCollision.h"
 #include "Yummy.h"
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 560;
-const int SCREEN_HEIGHT = 620;
+class Game
+{
+private:
+    //Screen dimension constants
+    const int SCREEN_WIDTH = 560;
+    const int SCREEN_HEIGHT = 620;
 
-//Starts up SDL and creates window
-bool init();
+    //The window we'll be rendering to
+    SDL_Window* window = NULL;
 
-//Loads media
-bool loadMedia(Tile* tiles[]);
+    //The window renderer
+    SDL_Renderer* renderer = NULL;
 
-//Frees media and shuts down SDL
-void close(Tile* tiles[]);
+    //Textures
+    Texture blankTexture;
+    Texture pacmanTexture;
+    Texture wallTexture;
+    Texture spaceTexture;
+    Texture smallYummyTexture;
+    Texture bigYummyTexture;
+    Texture blinkyTexture;
+    Texture clydeTexture;
+    Texture inkyTexture;
+    Texture pinkyTexture;
 
-//Sets tiles for space, wall and yummy
-bool setTiles(Tile *tiles[], Yummy* yummy[]);
+public:
+    //Initialize SDL
+    bool init();
 
-//The window we'll be rendering to
-SDL_Window* window = NULL;
+    //Load texture
+    bool loadTexture();
 
-//The window renderer
-SDL_Renderer* renderer = NULL;
+    //Set tiles
+    bool setTiles(Tile* tiles[], Yummy* yummy[]);
 
-//Textures
-Texture blankTexture;
-Texture pacmanTexture;
-Texture wallTexture;
-Texture spaceTexture;
-Texture smallYummyTexture;
-Texture bigYummyTexture;
+    //Close SDL and free memory
+    void close(Tile* tiles[], Yummy* yummy[]);
+
+    //Play the game
+    void play();
+
+};
 
 #endif // GAME_H

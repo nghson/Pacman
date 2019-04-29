@@ -2,7 +2,7 @@
 #define YUMMY_H
 
 #include <SDL2/SDL.h>
-#include "CheckCollision.h"
+#include "Tile.h"
 #include "Texture.h"
 
 //Size of yummy

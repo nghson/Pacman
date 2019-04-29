@@ -6,7 +6,7 @@
 #include "Tile.h"
 #include "Texture.h"
 #include "Yummy.h"
-#include "CheckCollision.h"
+#include "Ghost.h"
 
 //Pacman that will move around on the screen by keystrokes
 class Pacman
@@ -15,10 +15,10 @@ public:
     //Indicators of moving direction
     enum
     {
+        MOVING_UP,
+        MOVING_DOWN,
         MOVING_LEFT,
         MOVING_RIGHT,
-        MOVING_DOWN,
-        MOVING_UP,
         NOT_MOVING
     };
 
@@ -44,18 +44,21 @@ public:
     //Handle the pending event
     void handlePending(Tile* tiles[]);
 
-    //Get the number of yummy left
-    int getYummy();
+    //Has pacman won?
+    bool win();
+
+    //Has pacman lost?
+    bool lose(Ghost ghost);
 
     //Pacman eats some yummy!
     std::vector<int> eatYummy(Yummy* yummy[]);
 
     //Get box
-    SDL_Rect getBox();
+    SDL_Rect getPos();
 
 private:
-    //Collision box of the pacman
-    SDL_Rect mBox;
+    //Position of pacman
+    SDL_Rect position;
 
     //The velocity of the pacman
     int mVelX, mVelY;
