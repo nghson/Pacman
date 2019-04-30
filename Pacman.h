@@ -39,7 +39,7 @@ public:
     void move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT);
 
     //Shows pacman on the screen
-    void render(Texture& pacmanTexture, SDL_Renderer* renderer);
+    void render(Texture& spriteSheetTexture, SDL_Rect spriteClips[], int ANIMATION_FRAMES, int frame, SDL_Renderer* renderer);
 
     //Handle the pending event
     void handlePending(Tile* tiles[]);
@@ -58,16 +58,19 @@ public:
 
 private:
     //Position of pacman
-    SDL_Rect position;
+    SDL_Rect pos;
 
     //The velocity of the pacman
-    int mVelX, mVelY;
+    int velX, velY;
 
     //Pending keystroke, receiving values from the above enumeration
     int ePending;
 
     //Number of yummy left
-    int mYummy;
+    int yummyLeft;
+
+    //Current direction
+    int dir;
 };
 
 #endif // PACMAN_H

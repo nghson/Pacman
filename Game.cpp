@@ -1,5 +1,10 @@
 #include "Game.h"
 
+Game::Game()
+{
+    frame = 0;
+}
+
 bool Game::init()
 {
 	//Initialization flag
@@ -67,11 +72,28 @@ bool Game::loadTexture()
     }
 
 	//Load pacman texture
-	if (!pacmanTexture.loadFromFile(renderer, "test/pacman.bmp"))
+	if (!pacmanTexture.loadFromFile(renderer, "resources/Pacman.bmp"))
 	{
 		printf("Failed to load pacman texture!\n");
 		success = false;
 	}
+	else
+    {
+        int x = 0, y = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                pacmanSpriteClips[i][j] = {x, y, 20, 20};
+                x += 20;
+                if (x > 60)
+                {
+                    x = 0;
+                    y += 20;
+                }
+            }
+        }
+    }
 
 	//Load wall tile texture
 	if (!wallTexture.loadFromFile(renderer, "test/wall.bmp"))
@@ -132,7 +154,7 @@ bool Game::loadTexture()
 	return success;
 }
 
-void Game::close(Tile* tiles[], Yummy* yummy[])
+Game::~Game(Tile* tiles[], Yummy* yummy[])
 {
 	//Deallocate space and wall tiles
 	for (int i = 0; i < TOTAL_TILES; i++)
@@ -275,8 +297,6 @@ bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
     return success;
 }
 
-
-
 void Game::play()
 {
 	//Start up SDL and create window
@@ -326,16 +346,16 @@ void Game::play()
                     //Check if pacman wins
                     if (pacman.win())
                     {
-                        quit = true;
                         printf("WON!\n");
+                        break;
                     }
                     else
                     {
 //                        if (pacman.lose(blinky) || pacman.lose(clyde) || pacman.lose(inky) || pacman.lose(pinky))
                         if (pacman.lose(blinky))
                         {
-                            quit = true;
                             printf("LOST!\n");
+                            break;
                         }
                     }
 
@@ -415,7 +435,7 @@ void Game::play()
                     }
 
                     //Render pacman
-                    pacman.render(pacmanTexture, renderer);
+                    pacman.render(pacmanTexture, pacmanSpriteClips, renderer);
 
                     //Render ghosts
                     blinky.render(blinkyTexture, renderer);
@@ -426,8 +446,12 @@ void Game::play()
                     //Update screen
                     SDL_RenderPresent(renderer);
 
-//                    //Debug
-//                    SDL_Delay(5000);
+                    //Update frame
+                    frame++;
+                    if (frame/ANIMATION_FRAMES >= ANIMATION_FRAMES)
+                    {
+                        frame = 0;
+                    }
                 }
 			}
 		}

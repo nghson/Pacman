@@ -36,7 +36,17 @@ private:
     Texture inkyTexture;
     Texture pinkyTexture;
 
+    //Animation
+    const int ANIMATION_FRAMES = 2;
+    int frame;
+
+    //Pacman animation
+    SDL_Rect pacmanSpriteClips[4][4];
+
 public:
+    //Constructor
+    Game();
+
     //Initialize SDL
     bool init();
 
@@ -47,7 +57,7 @@ public:
     bool setTiles(Tile* tiles[], Yummy* yummy[]);
 
     //Close SDL and free memory
-    void close(Tile* tiles[], Yummy* yummy[]);
+    ~Game(Tile* tiles[], Yummy* yummy[]);
 
     //Play the game
     void play();

@@ -3,49 +3,73 @@
 Pacman::Pacman(int _x, int _y)
 {
     //Initialize the collision box
-    position.x = _x;
-    position.y = _y;
-	position.w = PACMAN_WIDTH;
-	position.h = PACMAN_HEIGHT;
+    pos.x = _x;
+    pos.y = _y;
+	pos.w = PACMAN_WIDTH;
+	pos.h = PACMAN_HEIGHT;
 
     //Initialize the velocity
-    mVelX = 0;
-    mVelY = 0;
+    velX = 0;
+    velY = 0;
 
     //Initialize ePending
     ePending = NOT_MOVING;
 
     //Initialize number of yummy
-    mYummy = TOTAL_YUMMY;
+    yummyLeft = TOTAL_YUMMY;
 }
 
 void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
     //Move pacman left or right
-    position.x += mVelX;
+    pos.x += velX;
 
     //If pacman touched a wall
-    if (touchesWall(position, tiles))
+    if (touchesWall(pos, tiles))
     {
         //move back
-        position.x -= mVelX;
+        pos.x -= velX;
     }
 
+    //Teleport
+    if (pos.x < 0) pos.x = SCREEN_WIDTH - PACMAN_WIDTH;
+    else if (pos.x + PACMAN_WIDTH > SCREEN_WIDTH) pos.x = 0;
+
     //Move pacman up or down
-    position.y += mVelY;
+    pos.y += velY;
 
     //If pacman touched a wall
-    if (touchesWall(position, tiles))
+    if (touchesWall(pos, tiles))
     {
         //move back
-        position.y -= mVelY;
+        pos.y -= velY;
     }
 }
 
-void Pacman::render(Texture& pacmanTexture, SDL_Renderer* renderer)
+void Pacman::render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][], int ANIMATION_FRAMES, int frame, SDL_Renderer* renderer)
 {
-    //Show the pacman
-	pacmanTexture.render(position.x, position.y, renderer);
+    if (dir == MOVING_LEFT)
+    {
+        SDL_Rect* currentClip = spriteClips[0][frame/2];
+        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+    }
+    if (dir == MOVING_DOWN)
+    {
+        SDL_Rect* currentClip = spriteClips[1][frame/2];
+        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+    }
+    if (dir == MOVING_RIGHT)
+    {
+        SDL_Rect* currentClip = spriteClips[2][frame/2];
+        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+    }
+    if (dir == MOVING_UP)
+    {
+        SDL_Rect* currentClip = spriteClips[3][frame/2];
+        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+    }
+    SDL_Rect* currentClip = &spriteClips[frame/ANIMATION_FRAMES];
+    spriteSheetTexture.render(pos.x, pos.y, currentClip);
 }
 
 void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
@@ -57,11 +81,12 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
         switch (e.key.keysym.sym)
         {
         case SDLK_UP:
-            if (canMove(position, PACMAN_VEL, MOVING_UP, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_UP, tiles))
             {
-                mVelY = -PACMAN_VEL;
-                mVelX = 0;
+                velY = -PACMAN_VEL;
+                velX = 0;
                 ePending = NOT_MOVING;
+                dir = MOVING_UP;
                 return;
             }
             else
@@ -71,11 +96,12 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_DOWN:
-            if (canMove(position, PACMAN_VEL, MOVING_DOWN, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_DOWN, tiles))
             {
-                mVelY = PACMAN_VEL;
-                mVelX = 0;
+                velY = PACMAN_VEL;
+                velX = 0;
                 ePending = NOT_MOVING;
+                dir = MOVING_DOWN;
                 return;
             }
             else
@@ -85,11 +111,12 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_LEFT:
-            if (canMove(position, PACMAN_VEL, MOVING_LEFT, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_LEFT, tiles))
             {
-                mVelX = -PACMAN_VEL;
-                mVelY = 0;
+                velX = -PACMAN_VEL;
+                velY = 0;
                 ePending = NOT_MOVING;
+                dir = MOVING_LEFT;
                 return;
             }
             else
@@ -99,11 +126,12 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_RIGHT:
-            if (canMove(position, PACMAN_VEL, MOVING_RIGHT, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_RIGHT, tiles))
             {
-                mVelX = PACMAN_VEL;
-                mVelY = 0;
+                velX = PACMAN_VEL;
+                velY = 0;
                 ePending = NOT_MOVING;
+                dir = MOVING_RIGHT;
                 return;
             }
             else
@@ -124,39 +152,39 @@ void Pacman::handlePending(Tile* tiles[])
         switch (ePending)
         {
         case MOVING_UP:
-            if (canMove(position, PACMAN_VEL, MOVING_UP, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_UP, tiles))
             {
-                mVelY = -PACMAN_VEL;
-                mVelX = 0;
+                velY = -PACMAN_VEL;
+                velX = 0;
                 ePending = NOT_MOVING;
-                return;
+                return MOVING_UP;
             }
             break;
         case MOVING_DOWN:
-            if (canMove(position, PACMAN_VEL, MOVING_DOWN, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_DOWN, tiles))
             {
-                mVelY = PACMAN_VEL;
-                mVelX = 0;
+                velY = PACMAN_VEL;
+                velX = 0;
                 ePending = NOT_MOVING;
-                return;
+                return MOVING_DOWN;
             }
             break;
         case MOVING_LEFT:
-            if (canMove(position, PACMAN_VEL, MOVING_LEFT, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_LEFT, tiles))
             {
-                mVelX = -PACMAN_VEL;
-                mVelY = 0;
+                velX = -PACMAN_VEL;
+                velY = 0;
                 ePending = NOT_MOVING;
-                return;
+                return MOVING_LEFT;
             }
             break;
         case MOVING_RIGHT:
-            if (canMove(position, PACMAN_VEL, MOVING_RIGHT, tiles))
+            if (canMove(pos, PACMAN_VEL, MOVING_RIGHT, tiles))
             {
-                mVelX = PACMAN_VEL;
-                mVelY = 0;
+                velX = PACMAN_VEL;
+                velY = 0;
                 ePending = NOT_MOVING;
-                return;
+                return MOVING_RIGHT;
             }
             break;
         }
@@ -165,12 +193,12 @@ void Pacman::handlePending(Tile* tiles[])
 
 bool Pacman::lose(Ghost ghost)
 {
-    return checkCollision(ghost.getPos(), position);
+    return checkCollision(ghost.getPos(), pos);
 }
 
 bool Pacman::win()
 {
-    return (mYummy < 0);
+    return (yummyLeft < 0);
 }
 
 std::vector<int> Pacman::eatYummy(Yummy* yummy[])
@@ -179,18 +207,18 @@ std::vector<int> Pacman::eatYummy(Yummy* yummy[])
     //Check if pacman has eaten which yummy
     for (int i = 0; i < TOTAL_TILES; i++)
     {
-        if (checkCollision(position, yummy[i]->getBox()))
+        if (checkCollision(pos, yummy[i]->getBox()))
         {
             eatenYummy.push_back(i);
         }
     }
     //Update the number of yummy left
-    mYummy -= eatenYummy.size();
+    yummyLeft -= eatenYummy.size();
 
     return eatenYummy;
 }
 
 SDL_Rect Pacman::getPos()
 {
-    return position;
+    return pos;
 }

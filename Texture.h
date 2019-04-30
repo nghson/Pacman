@@ -9,10 +9,10 @@
 class Texture
 {
 public:
-    //Initializes variables
+    //Constructor
     Texture();
 
-    //Deallocates memory
+    //Destructor: free memory
     ~Texture();
 
     //Loads image at specified path
@@ -22,19 +22,24 @@ public:
     void free();
 
     //Renders texture at given point
-    void render(int x, int y, SDL_Renderer* renderer);
+    void render(int x, int y, SDL_Rect* clip = NULL, SDL_Renderer* renderer);
 
-    //Get image dimensions
+    //Get width
     int getWidth();
+
+    //Get height
     int getHeight();
+
+    //Reset dimensions
+    void resetDim(int _width, int _height);
 
 private:
     //The actual hardware texture
-    SDL_Texture* mTexture;
+    SDL_Texture* texture;
 
     //Image dimensions
-    int mWidth;
-    int mHeight;
+    int width;
+    int height;
 };
 
 #endif // TEXTURE_H

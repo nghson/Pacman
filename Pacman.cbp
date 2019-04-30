@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="pacman" />
+		<Option title="Pacman" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/pacman" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/Pacman" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/pacman" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/Pacman" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -38,12 +38,39 @@
 		<Unit filename="Main.cpp" />
 		<Unit filename="Pacman.cpp" />
 		<Unit filename="Pacman.h" />
+		<Unit filename="README.md" />
 		<Unit filename="Texture.cpp" />
 		<Unit filename="Texture.h" />
 		<Unit filename="Tile.cpp" />
 		<Unit filename="Tile.h" />
+		<Unit filename="Window.cpp" />
+		<Unit filename="Window.h" />
 		<Unit filename="Yummy.cpp" />
 		<Unit filename="Yummy.h" />
+		<Unit filename="resources/Blinky.bmp" />
+		<Unit filename="resources/Cherry.bmp" />
+		<Unit filename="resources/Clyde.bmp" />
+		<Unit filename="resources/Inky.bmp" />
+		<Unit filename="resources/Map.png" />
+		<Unit filename="resources/Map.txt" />
+		<Unit filename="resources/PacMan.bmp" />
+		<Unit filename="resources/Pinky.bmp" />
+		<Unit filename="resources/google-pacman-logo-sprites.png" />
+		<Unit filename="resources/logo.bmp" />
+		<Unit filename="resources/point.bmp" />
+		<Unit filename="resources/point2.bmp" />
+		<Unit filename="resources/wall_sprite.bmp" />
+		<Unit filename="test/Map.txt" />
+		<Unit filename="test/bigyummy.bmp" />
+		<Unit filename="test/blank.bmp" />
+		<Unit filename="test/blinky.bmp" />
+		<Unit filename="test/clyde.bmp" />
+		<Unit filename="test/inky.bmp" />
+		<Unit filename="test/pacman.bmp" />
+		<Unit filename="test/pinky.bmp" />
+		<Unit filename="test/smallyummy.bmp" />
+		<Unit filename="test/space.bmp" />
+		<Unit filename="test/wall.bmp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
