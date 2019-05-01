@@ -211,7 +211,7 @@ bool Pacman::lose(Ghost ghost)
 
 bool Pacman::win()
 {
-    return (yummyLeft < 0);
+    return (yummyLeft <= 0);
 }
 
 std::vector<int> Pacman::eatYummy(Yummy* yummy[])

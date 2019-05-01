@@ -32,10 +32,8 @@ public:
 
 private:
     //Size of yummy
-    const int SMALL_YUMMY_WIDTH = 10;
-    const int SMALL_YUMMY_HEIGHT = 10;
-    const int BIG_YUMMY_WIDTH = 20;
-    const int BIG_YUMMY_HEIGHT = 20;
+    const int YUMMY_WIDTH = 20;
+    const int YUMMY_HEIGHT = 20;
 
     //Types of yummy
     enum

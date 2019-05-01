@@ -15,39 +15,7 @@ Ghost::Ghost(int _x, int _y)
 //Move the ghost: default
 void Ghost::move(SDL_Rect pacmanPos, Tile* tiles[])
 {
-    int distUp = INT_MAX, distDown = INT_MAX, distLeft = INT_MAX, distRight = INT_MAX;
-    if (canMove(pos, GHOST_VEL, MOVING_UP, tiles))
-            distUp = manhattanDist(pacmanPos, {pos.x, pos.y-GHOST_VEL, pos.w, pos.h});
-    if (canMove(pos, GHOST_VEL, MOVING_DOWN, tiles))
-        distDown = manhattanDist(pacmanPos, {pos.x, pos.y+GHOST_VEL, pos.w, pos.h});
-    if (canMove(pos, GHOST_VEL, MOVING_LEFT, tiles))
-        distLeft = manhattanDist(pacmanPos, {pos.x-GHOST_VEL, pos.y, pos.w, pos.h});
-    if (canMove(pos, GHOST_VEL, MOVING_RIGHT, tiles))
-        distRight = manhattanDist(pacmanPos, {pos.x+GHOST_VEL, pos.y, pos.w, pos.h});
-    int minDist = std::min(std::min(distUp, distDown), std::min(distLeft, distRight));
-    if (minDist != INT_MAX)
-    {
-        if (minDist == distUp)
-        {
-            pos.y -= GHOST_VEL;
-            dir = MOVING_UP;
-        }
-        else if (minDist == distDown)
-        {
-            pos.y += GHOST_VEL;
-            dir = MOVING_DOWN;
-        }
-        else if (minDist == distLeft)
-        {
-            pos.x -= GHOST_VEL;
-            dir = MOVING_LEFT;
-        }
-        else if (minDist == distRight)
-        {
-            pos.x += GHOST_VEL;
-            dir = MOVING_RIGHT;
-        }
-    }
+
 }
 
 int Ghost::manhattanDist(SDL_Rect a, SDL_Rect b)

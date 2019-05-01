@@ -81,6 +81,11 @@ private:
     Texture lifeTexture;
     Texture logoTexture;
 
+    //Texture for start/end screen
+    Texture startEndLogoTexture;
+    Texture textStartTexture;
+    Texture textEndTexture;
+    Texture textPlayAgainTexture;
 
     //Animation
     const int ANIMATION_FRAMES = 4;

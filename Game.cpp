@@ -53,7 +53,7 @@ bool Game::init()
 			else
 			{
 				//Initialize renderer color
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 
 				//Initialize SDL_image
 				int imgFlags = IMG_INIT_PNG;
@@ -85,6 +85,13 @@ bool Game::loadTexture()
 	if (!blankTexture.loadFromFile(renderer, "resources/Blank.bmp"))
     {
         printf("Failed to load blank texture!\n");
+        success = false;
+    }
+
+    //Load start logo texture
+    if (!startEndLogoTexture.loadFromFile(renderer, "resources/StartLogo.bmp"))
+    {
+        printf("Failed to load start logo texture!\n");
         success = false;
     }
 
@@ -137,7 +144,7 @@ bool Game::loadTexture()
 	}
 
     //Load space tile texture
-    if (!spaceTexture.loadFromFile(renderer, "test/space.bmp"))
+    if (!spaceTexture.loadFromFile(renderer, "resources/Space.bmp"))
     {
         printf("Failed to load space tile texture!\n");
         success = false;
@@ -213,7 +220,7 @@ bool Game::loadFont()
     bool success = true;
 
     //Open the font
-    font = TTF_OpenFont("resources/Arcade.ttf", 42);
+    font = TTF_OpenFont("resources/Arcade.ttf", 22);
     if (font == NULL)
     {
         printf("Failed to load arcade font! SDL_ttf Error: %s\n", TTF_GetError());
@@ -334,14 +341,14 @@ bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
                 case SPACE_TILE:
                     if (i == 146 || i == 161 || i == 566 || i == 581)
                     {
-                        int _x = tiles[i]->getBox().x + (TILE_WIDTH - BIG_YUMMY_WIDTH) / 2;
-                        int _y = tiles[i]->getBox().y + (TILE_HEIGHT - BIG_YUMMY_HEIGHT) / 2;
+                        int _x = tiles[i]->getBox().x;
+                        int _y = tiles[i]->getBox().y;
                         yummy[i] = new Yummy(_x, _y, BIG_YUMMY);
                     }
                     else
                     {
-                        int _x = tiles[i]->getBox().x + (TILE_WIDTH - SMALL_YUMMY_WIDTH) / 2;
-                        int _y = tiles[i]->getBox().y + (TILE_HEIGHT - SMALL_YUMMY_HEIGHT) / 2;
+                        int _x = tiles[i]->getBox().x;
+                        int _y = tiles[i]->getBox().y;
                         yummy[i] = new Yummy(_x, _y, SMALL_YUMMY);
                     }
                     break;
@@ -380,191 +387,329 @@ bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
 
 void Game::play()
 {
-	//Start up SDL and create window
-	if(!init())
-	{
-		printf("Failed to initialize!\n");
-	}
-	else
-	{
-		//The space and wall tiles
-		Tile* tileSet[TOTAL_TILES];
+    //Play again?
+    bool playAgain = true;
+    while (playAgain == true)
+    {
+        //The space and wall tiles
+        Tile* tileSet[TOTAL_TILES];
 
-		//The yummy
+        //The yummy
         Yummy* yummySet[TOTAL_TILES];
 
-		//Load texture and font
-		if (!loadTexture())
-		{
-			printf("Failed to load texture!\n");
-		}
-		else if (!loadFont())
+        //Start up SDL and create window
+        if(!init())
         {
-            printf("Failed to load font!\n");
+            printf("Failed to initialize!\n");
         }
-		else
-		{
-		    if (!setTiles(tileSet, yummySet))
+        else
+        {
+            //Load texture and font
+            if (!loadTexture())
             {
-                printf("Failed to load tile set!\n");
+                printf("Failed to load texture!\n");
+            }
+            else if (!loadFont())
+            {
+                printf("Failed to load font!\n");
             }
             else
             {
-                //Main loop flag
-                bool quit = false;
-
-                //Event handler
-                SDL_Event e;
-
-                //Initialize pacman at (20, 20)
-                Pacman pacman(20, 20, TOTAL_YUMMY);
-
-                //Initialize ghosts
-                Ghost blinky(180, 220);
-//                Ghost clyde(360, 220);
-//                Ghost inky(180, 340);
-//                Ghost pinky(360, 340);
-
-                //While the user does not quit
-                while (!quit)
+                //Set tiles
+                if (!setTiles(tileSet, yummySet))
                 {
-                    //Check if pacman wins
-                    if (pacman.win())
+                    printf("Failed to load tile set!\n");
+                }
+                else
+                {
+                    //Main loop flag
+                    bool quit = false;
+
+                    //Event handler
+                    SDL_Event e;
+
+                    //Render start screen
+                    textStartTexture.loadFromRenderedText("Start [Y/N]", textColor, font, renderer);
+                    int start = 0; //0 = no action, 1 = play, 2 = quit
+                    int flashStart = 0;
+                    while (true)
                     {
-                        printf("WON!\n");
-                        break;
-                    }
-                    else
-                    {
-//                        if (pacman.lose(blinky) || pacman.lose(clyde) || pacman.lose(inky) || pacman.lose(pinky))
-                        if (pacman.lose(blinky))
+                        if (flashStart <= 15)
                         {
-                            printf("LOST!\n");
+                            //Clear screen
+                            SDL_RenderClear(renderer);
+
+                            //Render start screen
+                            startEndLogoTexture.render(180, 200, renderer);
+                            textStartTexture.render(300, 350, renderer);
+                            SDL_RenderPresent(renderer);
+                        }
+                        else
+                        {
+                            //Clear screen
+                            SDL_RenderClear(renderer);
+
+                            //Render start screen
+                            startEndLogoTexture.render(180, 200, renderer);
+                            SDL_RenderPresent(renderer);
+                        }
+                        if (SDL_PollEvent(&e) != 0)
+                        {
+                            //User requests quit
+                            if (e.type == SDL_QUIT)
+                            {
+                                quit = true;
+                                break;
+                            }
+
+                            //Handle Y/N
+                            if (e.type == SDL_KEYDOWN)
+                            {
+                                switch (e.key.keysym.sym)
+                                {
+                                case SDLK_y:
+                                    start = 1;
+                                    break;
+                                case SDLK_n:
+                                    start = 2;
+                                    break;
+                                }
+                            }
+                        }
+
+                        //If user wants to play game
+                        if (start == 1)
+                        {
                             break;
                         }
-                    }
 
-                    //Handle events on queue
-                    if (SDL_PollEvent(&e) != 0)
-                    {
-                        //User requests quit
-                        if (e.type == SDL_QUIT)
+                        //If user does not want to play game
+                        else if (start == 2)
                         {
                             quit = true;
+                            break;
                         }
 
-                        //Handle input for the pacman and update velocity
-                        pacman.handleEvent(e, tileSet);
+                        //Update flashStart
+                        if (flashStart > 30) flashStart = 0;
+                        else flashStart++;
                     }
-                    else
-                    {
-                        pacman.handlePending(tileSet);
-                    }
-
-                    //Move pacman
-                    pacman.move(tileSet, PLAYSCREEN_WIDTH);
-
-                    //Did pacman eat some yummy?
-                    std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
-                    for (std::vector<int>::iterator itr = eatenYummy.begin(); itr != eatenYummy.end(); itr++)
-                    {
-                        yummySet[*itr]->deleteYummy();
-                    }
-
-                    printf("%d\n", pacman.getScore());
-
-                    //Move ghost
-                    blinky.move(pacman.getPos(), tileSet);
-//                    clyde.move(pacman.getPos(), tileSet);
-//                    inky.move(pacman.getPos(), tileSet);
-//                    pinky.move(pacman.getPos(), tileSet);
 
                     //Clear screen
                     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
                     SDL_RenderClear(renderer);
 
-                    //Render space tiles and wall tiles
-                    for (int i = 0; i < TOTAL_TILES; i++)
-                    {
-                        switch (tileSet[i]->getType())
+                    //Initialize pacman at (20, 20)
+                    Pacman pacman(20, 20, TOTAL_YUMMY);
+
+                    //Initialize ghosts
+                    Ghost blinky(180, 220);
+    //                Ghost clyde(360, 220);
+    //                Ghost inky(180, 340);
+    //                Ghost pinky(360, 340);
+
+                        //While the user does not quit
+                        while (!quit)
                         {
-                        //Render space tiles along with big yummy and small yummy
-                        case SPACE_TILE:
-                            tileSet[i]->render(spaceTexture, renderer);
-                            break;
-                        case WALL_TILE:
-                            tileSet[i]->render(wallTexture, renderer);
-                            break;
-                        case BLANK_TILE:
-                            tileSet[i]->render(blankTexture, renderer);
-                            break;
-                        default:
-                            break;
-                        }
-                    }
+                            //Check if pacman wins
+                            if (pacman.win())
+                            {
+                                break;
+                            }
+                            else
+                            {
+    //                            if (pacman.lose(blinky) || pacman.lose(clyde) || pacman.lose(inky) || pacman.lose(pinky))
+                                if (pacman.lose(blinky))
+                                {
+                                    break;
+                                }
+                            }
 
-                    //Render big yummy and small yummy
-                    for (int i = 0; i < TOTAL_TILES; i++)
-                    {
-                        switch (yummySet[i]->getType())
+                            //Handle events on queue
+                            if (SDL_PollEvent(&e) != 0)
+                            {
+                                //User requests quit
+                                if (e.type == SDL_QUIT)
+                                {
+                                    quit = true;
+                                }
+
+                                //Handle input for the pacman and update velocity
+                                pacman.handleEvent(e, tileSet);
+                            }
+                            else
+                            {
+                                pacman.handlePending(tileSet);
+                            }
+
+                            //Move pacman
+                            pacman.move(tileSet, PLAYSCREEN_WIDTH);
+
+                            //Did pacman eat some yummy?
+                            std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
+                            for (std::vector<int>::iterator itr = eatenYummy.begin(); itr != eatenYummy.end(); itr++)
+                            {
+                                yummySet[*itr]->deleteYummy();
+                            }
+
+                            //Move ghost
+                            blinky.move(pacman.getPos(), tileSet);
+        //                    clyde.move(pacman.getPos(), tileSet);
+        //                    inky.move(pacman.getPos(), tileSet);
+        //                    pinky.move(pacman.getPos(), tileSet);
+
+                            //Clear screen
+                            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+                            SDL_RenderClear(renderer);
+
+                            //Render space tiles and wall tiles
+                            for (int i = 0; i < TOTAL_TILES; i++)
+                            {
+                                switch (tileSet[i]->getType())
+                                {
+                                //Render space tiles along with big yummy and small yummy
+                                case SPACE_TILE:
+                                    tileSet[i]->render(spaceTexture, renderer);
+                                    break;
+                                case WALL_TILE:
+                                    tileSet[i]->render(wallTexture, renderer);
+                                    break;
+                                case BLANK_TILE:
+                                    tileSet[i]->render(blankTexture, renderer);
+                                    break;
+                                default:
+                                    break;
+                                }
+                            }
+
+                            //Render big yummy and small yummy
+                            for (int i = 0; i < TOTAL_TILES; i++)
+                            {
+                                switch (yummySet[i]->getType())
+                                {
+                                case SMALL_YUMMY:
+                                    yummySet[i]->render(smallYummyTexture, renderer);
+                                    break;
+                                case BIG_YUMMY:
+                                    yummySet[i]->render(bigYummyTexture, renderer);
+                                    break;
+                                case NO_YUMMY:
+                                    break;
+                                default:
+                                    break;
+                                }
+                            }
+
+                            //Render pacman
+                            pacman.render(pacmanTexture, pacmanSpriteClips, frame, renderer);
+
+                            //Render ghosts
+                            blinky.render(blinkyTexture, blinkySpriteClips, frame, renderer);
+        //                    clyde.render(clydeTexture, renderer);
+        //                    inky.render(inkyTexture, renderer);
+        //                    pinky.render(pinkyTexture, renderer);
+
+                            //Render info screen
+                            logoTexture.render(580, 50, renderer);
+                            textYourScoreTexture.loadFromRenderedText("Your Score", textColor, font, renderer);
+                            textYourScoreTexture.render(600, 200, renderer);
+                            textYScoreTexture.loadFromRenderedText(std::to_string(pacman.getScore()), textColor, font, renderer);
+                            textYScoreTexture.render(600, 260, renderer);
+                            textHighScoreTexture.loadFromRenderedText("High Score", textColor, font, renderer);
+                            textHighScoreTexture.render(600, 320, renderer);
+                            textHScoreTexture.loadFromRenderedText(std::to_string(highScore), textColor, font, renderer);
+                            textHScoreTexture.render(600, 380, renderer);
+                            textLifeTexture.loadFromRenderedText("Life", textColor, font, renderer);
+                            textLifeTexture.render(600, 440, renderer);
+                            lifeTexture.render(600, 500, renderer);
+
+                            //Update screen
+                            SDL_RenderPresent(renderer);
+
+                            //Update frame
+                            frame++;
+                            if (frame/(ANIMATION_FRAMES) >= ANIMATION_FRAMES)
+                            {
+                                frame = 0;
+                            }
+                        } // end main while loop
+
+                        //If the user closed the window
+                        if (e.type == SDL_QUIT) break;
+
+                        //If the user chose not to play game
+                        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_n) break;
+
+                        //Check for new high score
+                        if (pacman.getScore() > highScore)
                         {
-                        case SMALL_YUMMY:
-                            yummySet[i]->render(smallYummyTexture, renderer);
-                            break;
-                        case BIG_YUMMY:
-                            yummySet[i]->render(bigYummyTexture, renderer);
-                            break;
-                        case NO_YUMMY:
-                            break;
-                        default:
-                            break;
+                            std::ofstream HighScoreOut("resources/HighScore.txt");
+                            HighScoreOut << pacman.getScore();
                         }
-                    }
 
-                    //Render pacman
-                    pacman.render(pacmanTexture, pacmanSpriteClips, frame, renderer);
+                        //Render end screen
+                        textPlayAgainTexture.loadFromRenderedText("Play Again? [Y/N]", textColor, font, renderer);
+                        if (pacman.win()) textEndTexture.loadFromRenderedText("YOU WIN!", textColor, font, renderer);
+                        else textEndTexture.loadFromRenderedText("YOU LOSE!", textColor, font, renderer);
 
-                    //Render ghosts
-                    blinky.render(blinkyTexture, blinkySpriteClips, frame, renderer);
-//                    clyde.render(clydeTexture, renderer);
-//                    inky.render(inkyTexture, renderer);
-//                    pinky.render(pinkyTexture, renderer);
+                        int flashEnd = 0;
+                        bool end = false;
+                        while (end == false)
+                        {
+                            if (flashEnd <= 15)
+                            {
+                                SDL_RenderClear(renderer);
+                                textEndTexture.render(325, 150, renderer);
+                                textPlayAgainTexture.render(225, 400, renderer);
+                                textHighScoreTexture.render(175, 250, renderer);
+                                textHScoreTexture.render(175, 300, renderer);
+                                textYourScoreTexture.render(450, 250, renderer);
+                                textYScoreTexture.render(450, 300 ,renderer);
+                                SDL_RenderPresent(renderer);
+                            }
+                            else
+                            {
+                                SDL_RenderClear(renderer);
+                                textEndTexture.render(325, 150, renderer);
+                                textHighScoreTexture.render(175, 250, renderer);
+                                textHScoreTexture.render(175, 300, renderer);
+                                textYourScoreTexture.render(450, 250, renderer);
+                                textYScoreTexture.render(450, 300 ,renderer);
+                                SDL_RenderPresent(renderer);
+                            }
 
-                    //Render info screen
-                    logoTexture.render(580, 50, renderer);
-                    textYourScoreTexture.loadFromRenderedText("Your Score", textColor, font, renderer);
-                    textYourScoreTexture.render(600, 200, renderer);
-                    textYScoreTexture.loadFromRenderedText(std::to_string(pacman.getScore()), textColor, font, renderer);
-                    textYScoreTexture.render(600, 260, renderer);
-                    textHighScoreTexture.loadFromRenderedText("High Score", textColor, font, renderer);
-                    textHighScoreTexture.render(600, 320, renderer);
-                    textHScoreTexture.loadFromRenderedText(std::to_string(highScore), textColor, font, renderer);
-                    textHScoreTexture.render(600, 380, renderer);
-                    textLifeTexture.loadFromRenderedText("Life", textColor, font, renderer);
-                    textLifeTexture.render(600, 440, renderer);
-                    lifeTexture.render(600, 500, renderer);
+                            if (SDL_PollEvent(&e) != 0)
+                            {
+                                if (e.type == SDL_QUIT)
+                                {
+                                    playAgain = false;
+                                    end = true;
+                                }
 
-                    //Update screen
-                    SDL_RenderPresent(renderer);
+                                else if (e.type == SDL_KEYDOWN)
+                                {
+                                    switch (e.key.keysym.sym)
+                                    {
+                                    case SDLK_y:
+                                        playAgain = true;
+                                        end = true;
+                                        break;
+                                    case SDLK_n:
+                                        playAgain = false;
+                                        end = true;
+                                        break;
+                                    }
+                                }
+                            }
 
-                    //Update frame
-                    frame++;
-                    if (frame/(ANIMATION_FRAMES) >= ANIMATION_FRAMES)
-                    {
-                        frame = 0;
-                    }
+                            if (flashEnd > 30) flashEnd = 0;
+                            else flashEnd++;
+                        }
                 }
-
-                //Check for new high score
-                if (pacman.getScore() > highScore)
-                {
-                    std::ofstream HighScoreOut("resources/HighScore.txt");
-                    HighScoreOut << pacman.getScore();
                 }
-			}
-		}
+            }
 
-		//Free resources and close SDL
-		close(tileSet, yummySet);
+            //Free resources and close SDL
+            close(tileSet, yummySet);
 	}
 }

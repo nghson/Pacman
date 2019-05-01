@@ -26,6 +26,7 @@ public:
     int manhattanDist(SDL_Rect a, SDL_Rect b);
 
     //Move the ghost: random
+    void move();
 
     //Move the ghost: A*
 

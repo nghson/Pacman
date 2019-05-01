@@ -11,14 +11,14 @@ Yummy::Yummy(int _x, int _y, int _type)
     case SMALL_YUMMY:
         box.x = _x;
         box.y = _y;
-        box.w = SMALL_YUMMY_WIDTH;
-        box.h = SMALL_YUMMY_HEIGHT;
+        box.w = YUMMY_WIDTH;
+        box.h = YUMMY_HEIGHT;
         break;
     case BIG_YUMMY:
         box.x = _x;
         box.y = _y;
-        box.w = BIG_YUMMY_WIDTH;
-        box.h = BIG_YUMMY_HEIGHT;
+        box.w = YUMMY_WIDTH;
+        box.h = YUMMY_HEIGHT;
         break;
     case NO_YUMMY:
         box.x = 0;
