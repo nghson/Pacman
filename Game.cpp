@@ -3,6 +3,16 @@
 Game::Game()
 {
     frame = 0;
+    std::ifstream HighScoreIn("resources/HighScore.txt");
+    if (!HighScoreIn.is_open())
+    {
+        printf("Unable to load high score file! Setting high score to 0\n");
+        highScore = 0;
+    }
+    else
+    {
+        HighScoreIn >> highScore;
+    }
 }
 
 bool Game::init()
@@ -45,13 +55,20 @@ bool Game::init()
 				//Initialize renderer color
 				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-				//Initialize IMG loading
+				//Initialize SDL_image
 				int imgFlags = IMG_INIT_PNG;
 				if (!( IMG_Init(imgFlags) & imgFlags))
 				{
 					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 					success = false;
 				}
+
+				//Initialize SDL_ttf
+				if (TTF_Init() < 0)
+                {
+                    printf("SDL_ttf could not be initialized! SDL_ttf Error: %s\n", TTF_GetError());
+                    success = false;
+                }
 			}
 		}
 	}
@@ -65,9 +82,23 @@ bool Game::loadTexture()
 	bool success = true;
 
 	//Load blank texture
-	if (!blankTexture.loadFromFile(renderer, "test/blank.bmp"))
+	if (!blankTexture.loadFromFile(renderer, "resources/Blank.bmp"))
     {
         printf("Failed to load blank texture!\n");
+        success = false;
+    }
+
+    //Load logo texture
+    if (!logoTexture.loadFromFile(renderer, "resources/Logo.bmp"))
+    {
+        printf("Failed to load logo texture!\n");
+        success = false;
+    }
+
+    //Load life texture
+    if (!lifeTexture.loadFromFile(renderer, "resources/Life.bmp"))
+    {
+        printf("Failed to load life texture!\n");
         success = false;
     }
 
@@ -79,20 +110,23 @@ bool Game::loadTexture()
 	}
 	else
     {
-        int x = 0, y = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 2; j++)
-            {
-                pacmanSpriteClips[i][j] = {x, y, 20, 20};
-                x += 20;
-                if (x > 60)
-                {
-                    x = 0;
-                    y += 20;
-                }
-            }
-        }
+        pacmanSpriteClips[0][0] = {0, 0, 20, 20};
+        pacmanSpriteClips[0][1] = {0, 0, 20, 20};
+        pacmanSpriteClips[0][2] = {20, 0, 20, 20};
+        pacmanSpriteClips[0][3] = {20, 0, 20, 20};
+        pacmanSpriteClips[1][0] = {40, 0, 20, 20};
+        pacmanSpriteClips[1][1] = {40, 0, 20, 20};
+        pacmanSpriteClips[1][2] = {60, 0, 20, 20};
+        pacmanSpriteClips[1][3] = {60, 0, 20, 20};
+        pacmanSpriteClips[2][0] = {0, 20, 20, 20};
+        pacmanSpriteClips[2][1] = {0, 20, 20, 20};
+        pacmanSpriteClips[2][2] = {20, 20, 20, 20};
+        pacmanSpriteClips[2][3] = {20, 20, 20, 20};
+        pacmanSpriteClips[3][0] = {40, 20, 20, 20};
+        pacmanSpriteClips[3][1] = {40, 20, 20, 20};
+        pacmanSpriteClips[3][2] = {60, 20, 20, 20};
+        pacmanSpriteClips[3][3] = {60, 20, 20, 20};
+
     }
 
 	//Load wall tile texture
@@ -110,42 +144,61 @@ bool Game::loadTexture()
     }
 
 	//Load small yummy texture
-	if (!smallYummyTexture.loadFromFile(renderer, "test/smallyummy.bmp"))
+	if (!smallYummyTexture.loadFromFile(renderer, "resources/SmallYummy.bmp"))
     {
         printf("Failed to load small yummy texture!\n");
         success = false;
     }
 
     //Load big yummy texture
-    if (!bigYummyTexture.loadFromFile(renderer, "test/bigyummy.bmp"))
+    if (!bigYummyTexture.loadFromFile(renderer, "resources/BigYummy.bmp"))
     {
         printf("Failed to load big yummy texture!\n");
         success = false;
     }
 
     //Load blinky texture
-    if (!blinkyTexture.loadFromFile(renderer, "test/blinky.bmp"))
+    if (!blinkyTexture.loadFromFile(renderer, "resources/Blinky.bmp"))
     {
         printf("Failed to load blinky texture!\n");
         success = false;
     }
+    else
+    {
+        blinkySpriteClips[3][0] = {0, 0, 20, 20};
+        blinkySpriteClips[3][1] = {0, 0, 20, 20};
+        blinkySpriteClips[3][2] = {20, 0, 20, 20};
+        blinkySpriteClips[3][3] = {20, 0, 20, 20};
+        blinkySpriteClips[1][0] = {40, 0, 20, 20};
+        blinkySpriteClips[1][1] = {40, 0, 20, 20};
+        blinkySpriteClips[1][2] = {60, 0, 20, 20};
+        blinkySpriteClips[1][3] = {60, 0, 20, 20};
+        blinkySpriteClips[2][0] = {0, 20, 20, 20};
+        blinkySpriteClips[2][1] = {0, 20, 20, 20};
+        blinkySpriteClips[2][2] = {20, 20, 20, 20};
+        blinkySpriteClips[2][3] = {20, 20, 20, 20};
+        blinkySpriteClips[0][0] = {40, 20, 20, 20};
+        blinkySpriteClips[0][1] = {40, 20, 20, 20};
+        blinkySpriteClips[0][2] = {60, 20, 20, 20};
+        blinkySpriteClips[0][3] = {60, 20, 20, 20};
+    }
 
     //Load clyde texture
-    if (!clydeTexture.loadFromFile(renderer, "test/clyde.bmp"))
+    if (!clydeTexture.loadFromFile(renderer, "resources/Clyde.bmp"))
     {
         printf("Failed to load clyde texture!\n");
         success = false;
     }
 
     //Load inky texture
-    if (!inkyTexture.loadFromFile(renderer, "test/inky.bmp"))
+    if (!inkyTexture.loadFromFile(renderer, "resources/Inky.bmp"))
     {
         printf("Failed to load inky texture!\n");
         success = false;
     }
 
     //Load pinky texture
-    if (!pinkyTexture.loadFromFile(renderer, "test/pinky.bmp"))
+    if (!pinkyTexture.loadFromFile(renderer, "resources/Pinky.bmp"))
     {
         printf("Failed to load pinky texture!\n");
         success = false;
@@ -154,7 +207,22 @@ bool Game::loadTexture()
 	return success;
 }
 
-Game::~Game(Tile* tiles[], Yummy* yummy[])
+bool Game::loadFont()
+{
+    //Flag
+    bool success = true;
+
+    //Open the font
+    font = TTF_OpenFont("resources/Arcade.ttf", 42);
+    if (font == NULL)
+    {
+        printf("Failed to load arcade font! SDL_ttf Error: %s\n", TTF_GetError());
+        success = false;
+    }
+    return success;
+}
+
+void Game::close(Tile* tiles[], Yummy* yummy[])
 {
 	//Deallocate space and wall tiles
 	for (int i = 0; i < TOTAL_TILES; i++)
@@ -187,6 +255,16 @@ Game::~Game(Tile* tiles[], Yummy* yummy[])
 	clydeTexture.free();
 	inkyTexture.free();
 	pinkyTexture.free();
+	textYScoreTexture.free();
+    textYourScoreTexture.free();
+    textHScoreTexture.free();
+    textHighScoreTexture.free();
+    lifeTexture.free();
+    logoTexture.free();
+
+	//Free font
+	TTF_CloseFont(font);
+	font = NULL;
 
 	//Destroy window
 	SDL_DestroyRenderer(renderer);
@@ -195,6 +273,7 @@ Game::~Game(Tile* tiles[], Yummy* yummy[])
 	renderer = NULL;
 
 	//Quit SDL subsystems
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
@@ -245,10 +324,12 @@ bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
 				switch (tileType)
                 {
                 case BLANK_TILE:
-                    yummy[i] = new Yummy(UNDEFINED_X, UNDEFINED_Y, NO_YUMMY);
+                    //Type = NO_YUMMY
+                    yummy[i] = new Yummy(0, 0, 1);
                     break;
                 case WALL_TILE:
-                    yummy[i] = new Yummy(UNDEFINED_X, UNDEFINED_Y, NO_YUMMY);
+                    //Type = NO_YUMMY
+                    yummy[i] = new Yummy(0, 0, 1);
                     break;
                 case SPACE_TILE:
                     if (i == 146 || i == 161 || i == 566 || i == 581)
@@ -302,7 +383,7 @@ void Game::play()
 	//Start up SDL and create window
 	if(!init())
 	{
-		printf( "Failed to initialize!\n" );
+		printf("Failed to initialize!\n");
 	}
 	else
 	{
@@ -312,11 +393,15 @@ void Game::play()
 		//The yummy
         Yummy* yummySet[TOTAL_TILES];
 
-		//Load media
+		//Load texture and font
 		if (!loadTexture())
 		{
 			printf("Failed to load texture!\n");
 		}
+		else if (!loadFont())
+        {
+            printf("Failed to load font!\n");
+        }
 		else
 		{
 		    if (!setTiles(tileSet, yummySet))
@@ -331,8 +416,8 @@ void Game::play()
                 //Event handler
                 SDL_Event e;
 
-                //Initialize pacman
-                Pacman pacman(TILE_WIDTH, TILE_HEIGHT);
+                //Initialize pacman at (20, 20)
+                Pacman pacman(20, 20, TOTAL_YUMMY);
 
                 //Initialize ghosts
                 Ghost blinky(180, 220);
@@ -377,7 +462,7 @@ void Game::play()
                     }
 
                     //Move pacman
-                    pacman.move(tileSet, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    pacman.move(tileSet, PLAYSCREEN_WIDTH);
 
                     //Did pacman eat some yummy?
                     std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
@@ -386,6 +471,8 @@ void Game::play()
                         yummySet[*itr]->deleteYummy();
                     }
 
+                    printf("%d\n", pacman.getScore());
+
                     //Move ghost
                     blinky.move(pacman.getPos(), tileSet);
 //                    clyde.move(pacman.getPos(), tileSet);
@@ -393,7 +480,7 @@ void Game::play()
 //                    pinky.move(pacman.getPos(), tileSet);
 
                     //Clear screen
-                    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
                     SDL_RenderClear(renderer);
 
                     //Render space tiles and wall tiles
@@ -435,23 +522,44 @@ void Game::play()
                     }
 
                     //Render pacman
-                    pacman.render(pacmanTexture, pacmanSpriteClips, renderer);
+                    pacman.render(pacmanTexture, pacmanSpriteClips, frame, renderer);
 
                     //Render ghosts
-                    blinky.render(blinkyTexture, renderer);
+                    blinky.render(blinkyTexture, blinkySpriteClips, frame, renderer);
 //                    clyde.render(clydeTexture, renderer);
 //                    inky.render(inkyTexture, renderer);
 //                    pinky.render(pinkyTexture, renderer);
+
+                    //Render info screen
+                    logoTexture.render(580, 50, renderer);
+                    textYourScoreTexture.loadFromRenderedText("Your Score", textColor, font, renderer);
+                    textYourScoreTexture.render(600, 200, renderer);
+                    textYScoreTexture.loadFromRenderedText(std::to_string(pacman.getScore()), textColor, font, renderer);
+                    textYScoreTexture.render(600, 260, renderer);
+                    textHighScoreTexture.loadFromRenderedText("High Score", textColor, font, renderer);
+                    textHighScoreTexture.render(600, 320, renderer);
+                    textHScoreTexture.loadFromRenderedText(std::to_string(highScore), textColor, font, renderer);
+                    textHScoreTexture.render(600, 380, renderer);
+                    textLifeTexture.loadFromRenderedText("Life", textColor, font, renderer);
+                    textLifeTexture.render(600, 440, renderer);
+                    lifeTexture.render(600, 500, renderer);
 
                     //Update screen
                     SDL_RenderPresent(renderer);
 
                     //Update frame
                     frame++;
-                    if (frame/ANIMATION_FRAMES >= ANIMATION_FRAMES)
+                    if (frame/(ANIMATION_FRAMES) >= ANIMATION_FRAMES)
                     {
                         frame = 0;
                     }
+                }
+
+                //Check for new high score
+                if (pacman.getScore() > highScore)
+                {
+                    std::ofstream HighScoreOut("resources/HighScore.txt");
+                    HighScoreOut << pacman.getScore();
                 }
 			}
 		}

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #include <fstream>
@@ -13,10 +14,39 @@
 
 class Game
 {
+public:
+    //Constructor
+    Game();
+
+    //Initialize SDL
+    bool init();
+
+    //Load texture
+    bool loadTexture();
+
+    //Load font text
+    bool loadFont();
+
+    //Set tiles
+    bool setTiles(Tile* tiles[], Yummy* yummy[]);
+
+    //Close SDL and free memory
+    void close(Tile* tiles[], Yummy* yummy[]);
+
+    //Play the game
+    void play();
+
 private:
     //Screen dimension constants
-    const int SCREEN_WIDTH = 560;
+    const int SCREEN_WIDTH = 840;
     const int SCREEN_HEIGHT = 620;
+    const int PLAYSCREEN_WIDTH = 560;
+
+    //Number of yummy = number of space tiles
+    const int TOTAL_YUMMY = 300;
+
+    //Current high score
+    int highScore;
 
     //The window we'll be rendering to
     SDL_Window* window = NULL;
@@ -24,7 +54,13 @@ private:
     //The window renderer
     SDL_Renderer* renderer = NULL;
 
-    //Textures
+    //Font for text
+    TTF_Font* font = NULL;
+
+    //Color for font
+    SDL_Color textColor = {255, 255, 255};
+
+    //Textures for play screen
     Texture blankTexture;
     Texture pacmanTexture;
     Texture wallTexture;
@@ -36,32 +72,40 @@ private:
     Texture inkyTexture;
     Texture pinkyTexture;
 
+    //Texture for info screen
+    Texture textYScoreTexture;
+    Texture textYourScoreTexture;
+    Texture textHScoreTexture;
+    Texture textHighScoreTexture;
+    Texture textLifeTexture;
+    Texture lifeTexture;
+    Texture logoTexture;
+
+
     //Animation
-    const int ANIMATION_FRAMES = 2;
+    const int ANIMATION_FRAMES = 4;
     int frame;
 
-    //Pacman animation
+    //Sprites
     SDL_Rect pacmanSpriteClips[4][4];
+    SDL_Rect blinkySpriteClips[4][4];
+    SDL_Rect clydeSpriteClips[4][4];
+    SDL_Rect inkySpriteClips[4][4];
+    SDL_Rect pinkySpriteClips[4][4];
 
-public:
-    //Constructor
-    Game();
+    //Types of yummy
+    enum
+    {
+        SMALL_YUMMY,
+        NO_YUMMY,
+        BIG_YUMMY
+    };
 
-    //Initialize SDL
-    bool init();
-
-    //Load texture
-    bool loadTexture();
-
-    //Set tiles
-    bool setTiles(Tile* tiles[], Yummy* yummy[]);
-
-    //Close SDL and free memory
-    ~Game(Tile* tiles[], Yummy* yummy[]);
-
-    //Play the game
-    void play();
-
+    //Size of yummy
+    const int SMALL_YUMMY_WIDTH = 4;
+    const int SMALL_YUMMY_HEIGHT = 4;
+    const int BIG_YUMMY_WIDTH = 8;
+    const int BIG_YUMMY_HEIGHT = 8;
 };
 
 #endif // GAME_H

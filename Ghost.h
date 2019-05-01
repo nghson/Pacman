@@ -17,7 +17,7 @@ public:
     Ghost(int _x, int _y);
 
     //Render ghost on screen
-    void render(Texture& ghostTexture, SDL_Renderer* renderer);
+    void render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][4], int frame, SDL_Renderer* renderer);
 
     //Move the ghost: default
     void move(SDL_Rect pacmanPos, Tile* tiles[]);
@@ -25,7 +25,7 @@ public:
     //Manhattan distance between a and b
     int manhattanDist(SDL_Rect a, SDL_Rect b);
 
-    //Move the ghost: UCS
+    //Move the ghost: random
 
     //Move the ghost: A*
 
@@ -68,6 +68,9 @@ private:
 
     //Mode of the ghost: vulnerable or normal
     int mode;
+
+    //Current direction
+    int dir;
 };
 
 #endif // GHOST_H

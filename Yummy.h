@@ -5,26 +5,6 @@
 #include "Tile.h"
 #include "Texture.h"
 
-//Size of yummy
-const int SMALL_YUMMY_WIDTH = 4;
-const int SMALL_YUMMY_HEIGHT = 4;
-const int BIG_YUMMY_WIDTH = 8;
-const int BIG_YUMMY_HEIGHT = 8;
-
-//Types of yummy
-const int SMALL_YUMMY = 0;
-const int NO_YUMMY = 1;
-const int BIG_YUMMY = 2;
-
-//Undefined position and size of yummy (along with NO_YUMMY)
-const int UNDEFINED_X = 0;
-const int UNDEFINED_Y = 0;
-const int UNDEFINED_W = 0;
-const int UNDEFINED_H = 0;
-
-//Number of yummy = number of space tiles
-const int TOTAL_YUMMY = 300;
-
 //The yummy
 class Yummy
 {
@@ -36,7 +16,7 @@ public:
     */
 
     //Initialize yummy
-    Yummy(int _x, int _y, int _mType);
+    Yummy(int _x, int _y, int _type);
 
     //Shows the yummy
     void render(Texture& yummyTexture, SDL_Renderer* renderer);
@@ -51,11 +31,25 @@ public:
     void deleteYummy();
 
 private:
+    //Size of yummy
+    const int SMALL_YUMMY_WIDTH = 10;
+    const int SMALL_YUMMY_HEIGHT = 10;
+    const int BIG_YUMMY_WIDTH = 20;
+    const int BIG_YUMMY_HEIGHT = 20;
+
+    //Types of yummy
+    enum
+    {
+        SMALL_YUMMY,
+        NO_YUMMY,
+        BIG_YUMMY
+    };
+
     //The attributes of the yummy
-    SDL_Rect mBox;
+    SDL_Rect box;
 
     //The yummy type
-    int mType;
+    int type;
 };
 
 #endif // YUMMY_H

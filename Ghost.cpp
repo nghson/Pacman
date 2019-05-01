@@ -7,6 +7,9 @@ Ghost::Ghost(int _x, int _y)
 
     //Initialize mode of ghost
     mode = NORMAL;
+
+    //Initialize direction
+    dir = NOT_MOVING;
 }
 
 //Move the ghost: default
@@ -24,10 +27,26 @@ void Ghost::move(SDL_Rect pacmanPos, Tile* tiles[])
     int minDist = std::min(std::min(distUp, distDown), std::min(distLeft, distRight));
     if (minDist != INT_MAX)
     {
-        if (minDist == distUp) pos.y -= GHOST_VEL;
-        else if (minDist == distDown) pos.y += GHOST_VEL;
-        else if (minDist == distLeft) pos.x -= GHOST_VEL;
-        else if (minDist == distRight) pos.x += GHOST_VEL;
+        if (minDist == distUp)
+        {
+            pos.y -= GHOST_VEL;
+            dir = MOVING_UP;
+        }
+        else if (minDist == distDown)
+        {
+            pos.y += GHOST_VEL;
+            dir = MOVING_DOWN;
+        }
+        else if (minDist == distLeft)
+        {
+            pos.x -= GHOST_VEL;
+            dir = MOVING_LEFT;
+        }
+        else if (minDist == distRight)
+        {
+            pos.x += GHOST_VEL;
+            dir = MOVING_RIGHT;
+        }
     }
 }
 
@@ -54,9 +73,33 @@ int Ghost::getMode()
     return mode;
 }
 
-void Ghost::render(Texture& ghostTexture, SDL_Renderer* renderer)
+void Ghost::render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][4], int frame, SDL_Renderer* renderer)
 {
-    ghostTexture.render(pos.x, pos.y, renderer);
+    if (dir == MOVING_LEFT)
+    {
+        SDL_Rect* currentClip = &spriteClips[0][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
+    }
+    if (dir == MOVING_DOWN)
+    {
+        SDL_Rect* currentClip = &spriteClips[1][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
+    }
+    if (dir == MOVING_RIGHT)
+    {
+        SDL_Rect* currentClip = &spriteClips[2][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
+    }
+    if (dir == MOVING_UP)
+    {
+        SDL_Rect* currentClip = &spriteClips[3][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
+    }
+    if (dir == NOT_MOVING)
+    {
+        SDL_Rect* currentClip = &spriteClips[0][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
+    }
 }
 
 SDL_Rect Ghost::getPos()

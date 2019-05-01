@@ -1,0 +1,68 @@
+# depslib dependency file v1.0
+1556631504 source:/home/nghson/pacman/Ghost.cpp
+	"Ghost.h"
+
+1556709941 /home/nghson/pacman/Ghost.h
+	<SDL2/SDL.h>
+	<vector>
+	<cmath>
+	<climits>
+	"Tile.h"
+	"Texture.h"
+	"Yummy.h"
+
+1556355605 /home/nghson/pacman/Tile.h
+	<SDL2/SDL.h>
+	"Texture.h"
+
+1556708673 /home/nghson/pacman/Texture.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL_ttf.h>
+	<string>
+
+1556713585 /home/nghson/pacman/Yummy.h
+	<SDL2/SDL.h>
+	"Tile.h"
+	"Texture.h"
+
+1556552238 source:/home/nghson/pacman/Main.cpp
+	"Game.h"
+
+1556712089 /home/nghson/pacman/Game.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL_ttf.h>
+	<stdio.h>
+	<string>
+	<fstream>
+	"Texture.h"
+	"Tile.h"
+	"Pacman.h"
+	"Yummy.h"
+
+1556708346 /home/nghson/pacman/Pacman.h
+	<SDL2/SDL.h>
+	<vector>
+	"Tile.h"
+	"Texture.h"
+	"Yummy.h"
+	"Ghost.h"
+
+1556630755 source:/home/nghson/pacman/Tile.cpp
+	"Tile.h"
+
+1556592504 source:/home/nghson/pacman/Window.cpp
+
+1556713200 source:/home/nghson/pacman/Yummy.cpp
+	"Yummy.h"
+
+1556708579 source:/home/nghson/pacman/Pacman.cpp
+	"Pacman.h"
+
+1556708609 source:/home/nghson/pacman/Texture.cpp
+	"Texture.h"
+
+1556713492 source:/home/nghson/pacman/Game.cpp
+	"Game.h"
+

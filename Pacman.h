@@ -12,6 +12,37 @@
 class Pacman
 {
 public:
+    //Initializes the variables
+    Pacman(int _x, int _y, int TOTAL_YUMMY);
+
+    //Takes key presses and adjusts pacman's velocity
+    void handleEvent(SDL_Event& e, Tile* tiles[]);
+
+    //Moves pacman and check collision against wall tiles
+    void move(Tile *tiles[], int PLAYSCREEN_WIDTH);
+
+    //Shows pacman on the screen
+    void render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][4], int frame, SDL_Renderer* renderer);
+
+    //Handle the pending event
+    void handlePending(Tile* tiles[]);
+
+    //Has pacman won?
+    bool win();
+
+    //Has pacman lost?
+    bool lose(Ghost ghost);
+
+    //Pacman eats some yummy!
+    std::vector<int> eatYummy(Yummy* yummy[]);
+
+    //Get position box
+    SDL_Rect getPos();
+
+    //Get score
+    int getScore();
+
+private:
     //Indicators of moving direction
     enum
     {
@@ -29,34 +60,6 @@ public:
     //Maximum axis velocity of pacman
     static const int PACMAN_VEL = 2;
 
-    //Initializes the variables
-    Pacman(int _x, int _y);
-
-    //Takes key presses and adjusts pacman's velocity
-    void handleEvent(SDL_Event& e, Tile* tiles[]);
-
-    //Moves pacman and check collision against wall tiles
-    void move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT);
-
-    //Shows pacman on the screen
-    void render(Texture& spriteSheetTexture, SDL_Rect spriteClips[], int ANIMATION_FRAMES, int frame, SDL_Renderer* renderer);
-
-    //Handle the pending event
-    void handlePending(Tile* tiles[]);
-
-    //Has pacman won?
-    bool win();
-
-    //Has pacman lost?
-    bool lose(Ghost ghost);
-
-    //Pacman eats some yummy!
-    std::vector<int> eatYummy(Yummy* yummy[]);
-
-    //Get box
-    SDL_Rect getPos();
-
-private:
     //Position of pacman
     SDL_Rect pos;
 
@@ -71,6 +74,10 @@ private:
 
     //Current direction
     int dir;
+
+    //Current score: small = 10, big = 100
+    int score;
+
 };
 
 #endif // PACMAN_H

@@ -1,6 +1,6 @@
 #include "Pacman.h"
 
-Pacman::Pacman(int _x, int _y)
+Pacman::Pacman(int _x, int _y, const int TOTAL_YUMMY)
 {
     //Initialize the collision box
     pos.x = _x;
@@ -17,9 +17,15 @@ Pacman::Pacman(int _x, int _y)
 
     //Initialize number of yummy
     yummyLeft = TOTAL_YUMMY;
+
+    //Initialize direction
+    dir = NOT_MOVING;
+
+    //Initialize score
+    score = 0;
 }
 
-void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
+void Pacman::move(Tile *tiles[], int PLAYSCREEN_WIDTH)
 {
     //Move pacman left or right
     pos.x += velX;
@@ -32,8 +38,8 @@ void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
     }
 
     //Teleport
-    if (pos.x < 0) pos.x = SCREEN_WIDTH - PACMAN_WIDTH;
-    else if (pos.x + PACMAN_WIDTH > SCREEN_WIDTH) pos.x = 0;
+    if (pos.x < 0) pos.x = PLAYSCREEN_WIDTH - PACMAN_WIDTH;
+    else if (pos.x + PACMAN_WIDTH > PLAYSCREEN_WIDTH) pos.x = 0;
 
     //Move pacman up or down
     pos.y += velY;
@@ -46,30 +52,33 @@ void Pacman::move(Tile *tiles[], int SCREEN_WIDTH, int SCREEN_HEIGHT)
     }
 }
 
-void Pacman::render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][], int ANIMATION_FRAMES, int frame, SDL_Renderer* renderer)
+void Pacman::render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][4], int frame, SDL_Renderer* renderer)
 {
     if (dir == MOVING_LEFT)
     {
-        SDL_Rect* currentClip = spriteClips[0][frame/2];
-        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+        SDL_Rect* currentClip = &spriteClips[0][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
     }
     if (dir == MOVING_DOWN)
     {
-        SDL_Rect* currentClip = spriteClips[1][frame/2];
-        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+        SDL_Rect* currentClip = &spriteClips[1][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
     }
     if (dir == MOVING_RIGHT)
     {
-        SDL_Rect* currentClip = spriteClips[2][frame/2];
-        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+        SDL_Rect* currentClip = &spriteClips[2][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
     }
     if (dir == MOVING_UP)
     {
-        SDL_Rect* currentClip = spriteClips[3][frame/2];
-        spriteSheetTexture.render(pos.x, pos.y, currentClip, renderer);
+        SDL_Rect* currentClip = &spriteClips[3][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
     }
-    SDL_Rect* currentClip = &spriteClips[frame/ANIMATION_FRAMES];
-    spriteSheetTexture.render(pos.x, pos.y, currentClip);
+    if (dir == NOT_MOVING)
+    {
+        SDL_Rect* currentClip = &spriteClips[2][frame/4];
+        spriteSheetTexture.render(pos.x, pos.y, renderer, currentClip);
+    }
 }
 
 void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
@@ -157,7 +166,8 @@ void Pacman::handlePending(Tile* tiles[])
                 velY = -PACMAN_VEL;
                 velX = 0;
                 ePending = NOT_MOVING;
-                return MOVING_UP;
+                dir = MOVING_UP;
+                return;
             }
             break;
         case MOVING_DOWN:
@@ -166,7 +176,8 @@ void Pacman::handlePending(Tile* tiles[])
                 velY = PACMAN_VEL;
                 velX = 0;
                 ePending = NOT_MOVING;
-                return MOVING_DOWN;
+                dir = MOVING_DOWN;
+                return;
             }
             break;
         case MOVING_LEFT:
@@ -175,7 +186,8 @@ void Pacman::handlePending(Tile* tiles[])
                 velX = -PACMAN_VEL;
                 velY = 0;
                 ePending = NOT_MOVING;
-                return MOVING_LEFT;
+                dir = MOVING_LEFT;
+                return;
             }
             break;
         case MOVING_RIGHT:
@@ -184,7 +196,8 @@ void Pacman::handlePending(Tile* tiles[])
                 velX = PACMAN_VEL;
                 velY = 0;
                 ePending = NOT_MOVING;
-                return MOVING_RIGHT;
+                dir = MOVING_RIGHT;
+                return;
             }
             break;
         }
@@ -210,6 +223,12 @@ std::vector<int> Pacman::eatYummy(Yummy* yummy[])
         if (checkCollision(pos, yummy[i]->getBox()))
         {
             eatenYummy.push_back(i);
+
+            //If pacman ate smal yummy, score += 10
+            if (yummy[i]->getType() == 0) score += 10;
+
+            //If pacman ate big yummy, score += 100
+            if (yummy[i]->getType() == 2) score += 100;
         }
     }
     //Update the number of yummy left
@@ -221,4 +240,9 @@ std::vector<int> Pacman::eatYummy(Yummy* yummy[])
 SDL_Rect Pacman::getPos()
 {
     return pos;
+}
+
+int Pacman::getScore()
+{
+    return score;
 }
