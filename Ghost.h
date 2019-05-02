@@ -12,7 +12,6 @@
 #include "Tile.h"
 #include "Texture.h"
 #include "Yummy.h"
-#include "PriorityQueue.h"
 
 //Saves data about position
 class Ghost

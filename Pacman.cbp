@@ -38,39 +38,13 @@
 		<Unit filename="Main.cpp" />
 		<Unit filename="Pacman.cpp" />
 		<Unit filename="Pacman.h" />
-		<Unit filename="README.md" />
+		<Unit filename="PriorityQueue.h" />
 		<Unit filename="Texture.cpp" />
 		<Unit filename="Texture.h" />
 		<Unit filename="Tile.cpp" />
 		<Unit filename="Tile.h" />
-		<Unit filename="Window.cpp" />
-		<Unit filename="Window.h" />
 		<Unit filename="Yummy.cpp" />
 		<Unit filename="Yummy.h" />
-		<Unit filename="resources/Blinky.bmp" />
-		<Unit filename="resources/Cherry.bmp" />
-		<Unit filename="resources/Clyde.bmp" />
-		<Unit filename="resources/Inky.bmp" />
-		<Unit filename="resources/Map.png" />
-		<Unit filename="resources/Map.txt" />
-		<Unit filename="resources/PacMan.bmp" />
-		<Unit filename="resources/Pinky.bmp" />
-		<Unit filename="resources/google-pacman-logo-sprites.png" />
-		<Unit filename="resources/logo.bmp" />
-		<Unit filename="resources/point.bmp" />
-		<Unit filename="resources/point2.bmp" />
-		<Unit filename="resources/wall_sprite.bmp" />
-		<Unit filename="test/Map.txt" />
-		<Unit filename="test/bigyummy.bmp" />
-		<Unit filename="test/blank.bmp" />
-		<Unit filename="test/blinky.bmp" />
-		<Unit filename="test/clyde.bmp" />
-		<Unit filename="test/inky.bmp" />
-		<Unit filename="test/pacman.bmp" />
-		<Unit filename="test/pinky.bmp" />
-		<Unit filename="test/smallyummy.bmp" />
-		<Unit filename="test/space.bmp" />
-		<Unit filename="test/wall.bmp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

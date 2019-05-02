@@ -11,15 +11,19 @@ template <> struct hash<SDL_Rect> {
 };
 }
 
-//Overloading ==, != and <
+//Overloading == for unordered_map
 bool operator == (SDL_Rect a, SDL_Rect b)
 {
     return (a.x == b.x && a.y == b.y);
 }
-bool operator != (SDL_Rect a, SDL_Rect b)
+
+//Overloading !=
+bool operator!=(SDL_Rect a, SDL_Rect b)
 {
-    return ((a.x != b.x) || (a.y != b.y));
+    return (a.x != b.x || a.y != b.y);
 }
+
+//Overloading < for priority_queue
 bool operator < (SDL_Rect a, SDL_Rect b)
 {
     return (std::tie(a.x, a.y) < std::tie(b.x, b.y));
@@ -97,20 +101,24 @@ std::vector<SDL_Rect> Ghost::aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tile
     //Storing cost so far
     std::unordered_map<SDL_Rect, double> cost;
 
+    //Element of priority_queue is pair<priority, position>
+    typedef std::pair<double, SDL_Rect> element;
+
     //Priority queue
-    PriorityQueue<SDL_Rect, double> frontier;
+    std::priority_queue<element, std::vector<element>, std::greater<element> > frontier;
 
     //Initialize parent and cost of current ghost position
     parent[start] = start;
     cost[start] = 0;
 
     //Initialize frontier
-    frontier.put(start, 0);
+    frontier.emplace(0, start);
 
     while (!frontier.empty())
     {
         //Get the position with largest priority and delete it
-        SDL_Rect current = frontier.get();
+        SDL_Rect current = frontier.top().second;
+        frontier.pop();
 
         //If ghost has reached destination
         if (current == goal) break;
@@ -126,7 +134,7 @@ std::vector<SDL_Rect> Ghost::aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tile
             //If cannot move to the position, the cost is infinity
             if (!canMove(current, MOVING_UP, tiles)) newCostUP = DBL_MAX;
             cost[nextUP] = newCostUP;
-            frontier.put(nextUP, newCostUP + heuristic(nextUP, goal));
+            frontier.emplace(newCostUP + heuristic(nextUP, goal), nextUP);
             parent[nextUP] = current;
         }
 
@@ -139,7 +147,7 @@ std::vector<SDL_Rect> Ghost::aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tile
             //If cannot move to the position, the cost is infinity
             if (!canMove(current, MOVING_DOWN, tiles)) newCostDOWN = DBL_MAX;
             cost[nextDOWN] = newCostDOWN;
-            frontier.put(nextDOWN, newCostDOWN + heuristic(nextDOWN, goal));
+            frontier.emplace(newCostDOWN + heuristic(nextDOWN, goal), nextDOWN);
             parent[nextDOWN] = current;
         }
 
@@ -152,7 +160,7 @@ std::vector<SDL_Rect> Ghost::aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tile
             //If cannot move to the position, the cost is infinity
             if (!canMove(current, MOVING_LEFT, tiles)) newCostLEFT = DBL_MAX;
             cost[nextLEFT] = newCostLEFT;
-            frontier.put(nextLEFT, newCostLEFT + heuristic(nextLEFT, goal));
+            frontier.emplace(newCostLEFT + heuristic(nextLEFT, goal), nextLEFT);
             parent[nextLEFT] = current;
         }
 
@@ -165,7 +173,7 @@ std::vector<SDL_Rect> Ghost::aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tile
             //If cannot move to the position, the cost is infinity
             if (!canMove(current, MOVING_RIGHT, tiles)) newCostRIGHT = DBL_MAX;
             cost[nextRIGHT] = newCostRIGHT;
-            frontier.put(nextRIGHT, newCostRIGHT + heuristic(nextRIGHT, goal));
+            frontier.emplace(newCostRIGHT + heuristic(nextRIGHT, goal), nextRIGHT);
             parent[nextRIGHT] = current;
         }
     }
@@ -190,4 +198,3 @@ std::vector<SDL_Rect> Ghost::aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tile
 
     return path;
 }
-

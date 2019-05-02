@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1556814276 source:/home/nghson/pacman/Ghost.cpp
+1556816037 source:/home/nghson/pacman/Ghost.cpp
 	"Ghost.h"
 
-1556813171 /home/nghson/pacman/Ghost.h
+1556815271 /home/nghson/pacman/Ghost.h
 	<SDL2/SDL.h>
 	<vector>
 	<cmath>
@@ -14,7 +14,6 @@
 	"Tile.h"
 	"Texture.h"
 	"Yummy.h"
-	"PriorityQueue.h"
 
 1556739273 /home/nghson/pacman/Tile.h
 	<SDL2/SDL.h>
