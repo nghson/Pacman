@@ -137,7 +137,7 @@ bool Game::loadTexture()
     }
 
 	//Load wall tile texture
-	if (!wallTexture.loadFromFile(renderer, "test/wall.bmp"))
+	if (!wallTexture.loadFromFile(renderer, "resources/Wall.bmp"))
 	{
 		printf("Failed to load wall tile texture!\n");
 		success = false;
@@ -294,7 +294,7 @@ bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
     int x = 0, y = 0;
 
     //Open the map
-    std::ifstream Map("test/Map.txt");
+    std::ifstream Map("resources/Map.txt");
 
     //If the map couldn't be loaded
     if(!Map.is_open())
@@ -323,22 +323,25 @@ bool Game::setTiles(Tile* tiles[], Yummy* yummy[])
 			}
 
 			//If the number is a valid tile number
-			if (((tileType >= 0) && (tileType < TOTAL_TILE_TYPES)) || tileType == BLANK_TILE)
+			if (((tileType >= 0) && (tileType < TOTAL_TILE_TYPES)) || tileType == 9)
 			{
 				tiles[i] = new Tile(x, y, tileType);
 
 				//Set big/small yummy
 				switch (tileType)
                 {
-                case BLANK_TILE:
+                //Blank tile
+                case 9:
                     //Type = NO_YUMMY
                     yummy[i] = new Yummy(0, 0, 1);
                     break;
-                case WALL_TILE:
+                //Wall tile
+                case 1:
                     //Type = NO_YUMMY
                     yummy[i] = new Yummy(0, 0, 1);
                     break;
-                case SPACE_TILE:
+                //Space tile
+                case 0:
                     if (i == 146 || i == 161 || i == 566 || i == 581)
                     {
                         int _x = tiles[i]->getBox().x;
@@ -546,7 +549,7 @@ void Game::play()
                             pacman.move(tileSet, PLAYSCREEN_WIDTH);
 
                             //Did pacman eat some yummy?
-                            std::vector<int> eatenYummy = pacman.eatYummy(yummySet);
+                            std::vector<int> eatenYummy = pacman.eatYummy(yummySet, TOTAL_TILES);
                             for (std::vector<int>::iterator itr = eatenYummy.begin(); itr != eatenYummy.end(); itr++)
                             {
                                 yummySet[*itr]->deleteYummy();
@@ -568,13 +571,13 @@ void Game::play()
                                 switch (tileSet[i]->getType())
                                 {
                                 //Render space tiles along with big yummy and small yummy
-                                case SPACE_TILE:
+                                case 0:
                                     tileSet[i]->render(spaceTexture, renderer);
                                     break;
-                                case WALL_TILE:
+                                case 1:
                                     tileSet[i]->render(wallTexture, renderer);
                                     break;
-                                case BLANK_TILE:
+                                case 9:
                                     tileSet[i]->render(blankTexture, renderer);
                                     break;
                                 default:

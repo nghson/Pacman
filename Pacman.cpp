@@ -90,7 +90,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
         switch (e.key.keysym.sym)
         {
         case SDLK_UP:
-            if (canMove(pos, PACMAN_VEL, MOVING_UP, tiles))
+            if (canMove(pos, MOVING_UP, tiles))
             {
                 velY = -PACMAN_VEL;
                 velX = 0;
@@ -105,7 +105,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_DOWN:
-            if (canMove(pos, PACMAN_VEL, MOVING_DOWN, tiles))
+            if (canMove(pos, MOVING_DOWN, tiles))
             {
                 velY = PACMAN_VEL;
                 velX = 0;
@@ -120,7 +120,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_LEFT:
-            if (canMove(pos, PACMAN_VEL, MOVING_LEFT, tiles))
+            if (canMove(pos, MOVING_LEFT, tiles))
             {
                 velX = -PACMAN_VEL;
                 velY = 0;
@@ -135,7 +135,7 @@ void Pacman::handleEvent(SDL_Event& e, Tile* tiles[])
             }
             break;
         case SDLK_RIGHT:
-            if (canMove(pos, PACMAN_VEL, MOVING_RIGHT, tiles))
+            if (canMove(pos, MOVING_RIGHT, tiles))
             {
                 velX = PACMAN_VEL;
                 velY = 0;
@@ -161,7 +161,7 @@ void Pacman::handlePending(Tile* tiles[])
         switch (ePending)
         {
         case MOVING_UP:
-            if (canMove(pos, PACMAN_VEL, MOVING_UP, tiles))
+            if (canMove(pos, MOVING_UP, tiles))
             {
                 velY = -PACMAN_VEL;
                 velX = 0;
@@ -171,7 +171,7 @@ void Pacman::handlePending(Tile* tiles[])
             }
             break;
         case MOVING_DOWN:
-            if (canMove(pos, PACMAN_VEL, MOVING_DOWN, tiles))
+            if (canMove(pos, MOVING_DOWN, tiles))
             {
                 velY = PACMAN_VEL;
                 velX = 0;
@@ -181,7 +181,7 @@ void Pacman::handlePending(Tile* tiles[])
             }
             break;
         case MOVING_LEFT:
-            if (canMove(pos, PACMAN_VEL, MOVING_LEFT, tiles))
+            if (canMove(pos, MOVING_LEFT, tiles))
             {
                 velX = -PACMAN_VEL;
                 velY = 0;
@@ -191,7 +191,7 @@ void Pacman::handlePending(Tile* tiles[])
             }
             break;
         case MOVING_RIGHT:
-            if (canMove(pos, PACMAN_VEL, MOVING_RIGHT, tiles))
+            if (canMove(pos, MOVING_RIGHT, tiles))
             {
                 velX = PACMAN_VEL;
                 velY = 0;
@@ -214,7 +214,7 @@ bool Pacman::win()
     return (yummyLeft <= 0);
 }
 
-std::vector<int> Pacman::eatYummy(Yummy* yummy[])
+std::vector<int> Pacman::eatYummy(Yummy* yummy[], const int TOTAL_TILES)
 {
     std::vector<int> eatenYummy;
     //Check if pacman has eaten which yummy

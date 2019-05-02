@@ -111,6 +111,23 @@ private:
     const int SMALL_YUMMY_HEIGHT = 4;
     const int BIG_YUMMY_WIDTH = 8;
     const int BIG_YUMMY_HEIGHT = 8;
+
+    //Tile constants
+    const int TOTAL_TILES = 868; // 868 = 28*31
+    const int TOTAL_TILE_TYPES = 2;
+
+    //Tile dimensions
+    const int TILE_WIDTH = 20;
+    const int TILE_HEIGHT = 20;
+
+    //Level dimensions
+    const int LEVEL_WIDTH = 560;
+    const int LEVEL_HEIGHT = 620;
+
+    //Type of tiles
+    const int BLANK_TILE = 9;
+    const int WALL_TILE = 1;
+    const int SPACE_TILE = 0;
 };
 
 #endif // GAME_H

@@ -4,12 +4,17 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <cmath>
-#include <climits>
+#include <cfloat>
+#include <stdlib.h>
+#include <queue>
+#include <unordered_map>
+#include <algorithm>
 #include "Tile.h"
 #include "Texture.h"
 #include "Yummy.h"
+#include "PriorityQueue.h"
 
-//Ghost on control
+//Saves data about position
 class Ghost
 {
 public:
@@ -19,22 +24,17 @@ public:
     //Render ghost on screen
     void render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][4], int frame, SDL_Renderer* renderer);
 
-    //Move the ghost: default
+    //Heuristic: Manhattan distance between a and b
+    int heuristic(SDL_Rect a, SDL_Rect b);
+
+    //Move the ghost
     void move(SDL_Rect pacmanPos, Tile* tiles[]);
 
-    //Manhattan distance between a and b
-    int manhattanDist(SDL_Rect a, SDL_Rect b);
+//    //Pathfinder: just moving randomly
+//    int randomPath();
 
-    //Move the ghost: random
-    void move();
-
-    //Move the ghost: A*
-
-    //Change ghost mode
-    void changeMode();
-
-    //Get current mode
-    int getMode();
+    //Pathfinder: A* Search
+    std::vector<SDL_Rect> aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tiles[]);
 
     //Get current position
     SDL_Rect getPos();
@@ -59,16 +59,6 @@ private:
 
     //Position of ghost
     SDL_Rect pos;
-
-    //Indicators of ghost modes
-    enum
-    {
-        NORMAL,
-        VULNERABLE
-    };
-
-    //Mode of the ghost: vulnerable or normal
-    int mode;
 
     //Current direction
     int dir;

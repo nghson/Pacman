@@ -34,7 +34,7 @@ public:
     bool lose(Ghost ghost);
 
     //Pacman eats some yummy!
-    std::vector<int> eatYummy(Yummy* yummy[]);
+    std::vector<int> eatYummy(Yummy* yummy[], const int TOTAL_TILES);
 
     //Get position box
     SDL_Rect getPos();

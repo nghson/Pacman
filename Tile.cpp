@@ -3,30 +3,30 @@
 Tile::Tile(int x, int y, int tileType)
 {
     //Get the offsets
-    mBox.x = x;
-    mBox.y = y;
+    box.x = x;
+    box.y = y;
 
     //Set the collision box
-    mBox.w = TILE_WIDTH;
-    mBox.h = TILE_HEIGHT;
+    box.w = TILE_WIDTH;
+    box.h = TILE_HEIGHT;
 
     //Get the tile type
-    mType = tileType;
+    type = tileType;
 }
 
 void Tile::render(Texture& tileTexture, SDL_Renderer* renderer)
 {
-    tileTexture.render(mBox.x, mBox.y, renderer);
+    tileTexture.render(box.x, box.y, renderer);
 }
 
 int Tile::getType()
 {
-    return mType;
+    return type;
 }
 
 SDL_Rect Tile::getBox()
 {
-    return mBox;
+    return box;
 }
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
@@ -74,7 +74,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
     return true;
 }
 
-bool touchesWall(SDL_Rect box, Tile* tiles[])
+bool touchesWall(SDL_Rect box, Tile* tiles[], const int TOTAL_TILES)
 {
     //Go through the tiles
     for (int i = 0; i < TOTAL_TILES; i++)
@@ -94,7 +94,7 @@ bool touchesWall(SDL_Rect box, Tile* tiles[])
     return false;
 }
 
-bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[])
+bool canMove(SDL_Rect box, int direction, Tile* tiles[], int vel)
 {
     SDL_Rect testBox;
     switch (direction)

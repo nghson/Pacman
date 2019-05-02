@@ -4,21 +4,6 @@
 #include <SDL2/SDL.h>
 #include "Texture.h"
 
-//Tile constants
-const int TILE_WIDTH = 20;
-const int TILE_HEIGHT = 20;
-const int TOTAL_TILES = 868; // 868 = 28*31
-const int TOTAL_TILE_TYPES = 2;
-
-//Types of tiles
-const int SPACE_TILE = 0;
-const int WALL_TILE = 1;
-const int BLANK_TILE = 9;
-
-//The dimensions of the level
-const int LEVEL_WIDTH = 560;
-const int LEVEL_HEIGHT = 620;
-
 //The tile
 class Tile
 {
@@ -36,20 +21,24 @@ public:
     SDL_Rect getBox();
 
 private:
+    //Tile constants
+    const int TILE_WIDTH = 20;
+    const int TILE_HEIGHT = 20;
+
     //The attributes of the tile
-    SDL_Rect mBox;
+    SDL_Rect box;
 
     //The tile type
-    int mType;
+    int type;
 };
 
 //Box collision detector
 bool checkCollision(SDL_Rect a, SDL_Rect b);
 
 //Checks collision box against set of tiles
-bool touchesWall(SDL_Rect box, Tile* tiles[]);
+bool touchesWall(SDL_Rect box, Tile* tiles[], const int TOTAL_TILES = 868);
 
 //Can the object move in the provided direction?
-bool canMove(SDL_Rect box, int vel, int direction, Tile* tiles[]);
+bool canMove(SDL_Rect box, int direction, Tile* tiles[], int vel = 2);
 
 #endif // TILE_H
