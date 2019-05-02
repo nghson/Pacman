@@ -38,7 +38,6 @@
 		<Unit filename="Main.cpp" />
 		<Unit filename="Pacman.cpp" />
 		<Unit filename="Pacman.h" />
-		<Unit filename="PriorityQueue.h" />
 		<Unit filename="Texture.cpp" />
 		<Unit filename="Texture.h" />
 		<Unit filename="Tile.cpp" />

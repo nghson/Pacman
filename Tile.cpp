@@ -50,22 +50,22 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
     bottomB = b.y + b.h;
 
     //If any of the sides from A are inside of B
-    if( bottomA <= topB )
+    if (bottomA <= topB)
     {
         return false;
     }
 
-    if( topA >= bottomB )
+    if (topA >= bottomB)
     {
         return false;
     }
 
-    if( rightA <= leftB )
+    if (rightA <= leftB)
     {
         return false;
     }
 
-    if( leftA >= rightB )
+    if (leftA >= rightB)
     {
         return false;
     }
@@ -101,22 +101,22 @@ bool canMove(SDL_Rect box, int direction, Tile* tiles[], int vel)
     {
         //MOVING_UP
         case 0:
-            testBox = {box.x, box.y-vel, box.w, box.h};
+            testBox = {box.x, box.y - vel, box.w, box.h};
             if (touchesWall(testBox, tiles)) return false;
             break;
         //MOVING_DOWN
         case 1:
-            testBox = {box.x, box.y+vel, box.w, box.h};
+            testBox = {box.x, box.y + vel, box.w, box.h};
             if (touchesWall(testBox, tiles)) return false;
             break;
         //MOVING_LEFT
         case 2:
-            testBox = {box.x-vel, box.y, box.w, box.h};
+            testBox = {box.x - vel, box.y, box.w, box.h};
             if (touchesWall(testBox, tiles)) return false;
             break;
         //MOVING_RIGHT
         case 3:
-            testBox = {box.x+vel, box.y, box.w, box.h};
+            testBox = {box.x + vel, box.y, box.w, box.h};
             if (touchesWall(testBox, tiles)) return false;
             break;
         }

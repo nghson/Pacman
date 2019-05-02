@@ -196,6 +196,25 @@ bool Game::loadTexture()
         printf("Failed to load clyde texture!\n");
         success = false;
     }
+    else
+    {
+        clydeSpriteClips[3][0] = {0, 0, 20, 20};
+        clydeSpriteClips[3][1] = {0, 0, 20, 20};
+        clydeSpriteClips[3][2] = {20, 0, 20, 20};
+        clydeSpriteClips[3][3] = {20, 0, 20, 20};
+        clydeSpriteClips[1][0] = {40, 0, 20, 20};
+        clydeSpriteClips[1][1] = {40, 0, 20, 20};
+        clydeSpriteClips[1][2] = {60, 0, 20, 20};
+        clydeSpriteClips[1][3] = {60, 0, 20, 20};
+        clydeSpriteClips[2][0] = {0, 20, 20, 20};
+        clydeSpriteClips[2][1] = {0, 20, 20, 20};
+        clydeSpriteClips[2][2] = {20, 20, 20, 20};
+        clydeSpriteClips[2][3] = {20, 20, 20, 20};
+        clydeSpriteClips[0][0] = {40, 20, 20, 20};
+        clydeSpriteClips[0][1] = {40, 20, 20, 20};
+        clydeSpriteClips[0][2] = {60, 20, 20, 20};
+        clydeSpriteClips[0][3] = {60, 20, 20, 20};
+    }
 
     //Load inky texture
     if (!inkyTexture.loadFromFile(renderer, "resources/Inky.bmp"))
@@ -203,12 +222,50 @@ bool Game::loadTexture()
         printf("Failed to load inky texture!\n");
         success = false;
     }
+    else
+    {
+        inkySpriteClips[3][0] = {0, 0, 20, 20};
+        inkySpriteClips[3][1] = {0, 0, 20, 20};
+        inkySpriteClips[3][2] = {20, 0, 20, 20};
+        inkySpriteClips[3][3] = {20, 0, 20, 20};
+        inkySpriteClips[1][0] = {40, 0, 20, 20};
+        inkySpriteClips[1][1] = {40, 0, 20, 20};
+        inkySpriteClips[1][2] = {60, 0, 20, 20};
+        inkySpriteClips[1][3] = {60, 0, 20, 20};
+        inkySpriteClips[2][0] = {0, 20, 20, 20};
+        inkySpriteClips[2][1] = {0, 20, 20, 20};
+        inkySpriteClips[2][2] = {20, 20, 20, 20};
+        inkySpriteClips[2][3] = {20, 20, 20, 20};
+        inkySpriteClips[0][0] = {40, 20, 20, 20};
+        inkySpriteClips[0][1] = {40, 20, 20, 20};
+        inkySpriteClips[0][2] = {60, 20, 20, 20};
+        inkySpriteClips[0][3] = {60, 20, 20, 20};
+    }
 
     //Load pinky texture
     if (!pinkyTexture.loadFromFile(renderer, "resources/Pinky.bmp"))
     {
         printf("Failed to load pinky texture!\n");
         success = false;
+    }
+    else
+    {
+        pinkySpriteClips[3][0] = {0, 0, 20, 20};
+        pinkySpriteClips[3][1] = {0, 0, 20, 20};
+        pinkySpriteClips[3][2] = {20, 0, 20, 20};
+        pinkySpriteClips[3][3] = {20, 0, 20, 20};
+        pinkySpriteClips[1][0] = {40, 0, 20, 20};
+        pinkySpriteClips[1][1] = {40, 0, 20, 20};
+        pinkySpriteClips[1][2] = {60, 0, 20, 20};
+        pinkySpriteClips[1][3] = {60, 0, 20, 20};
+        pinkySpriteClips[2][0] = {0, 20, 20, 20};
+        pinkySpriteClips[2][1] = {0, 20, 20, 20};
+        pinkySpriteClips[2][2] = {20, 20, 20, 20};
+        pinkySpriteClips[2][3] = {20, 20, 20, 20};
+        pinkySpriteClips[0][0] = {40, 20, 20, 20};
+        pinkySpriteClips[0][1] = {40, 20, 20, 20};
+        pinkySpriteClips[0][2] = {60, 20, 20, 20};
+        pinkySpriteClips[0][3] = {60, 20, 20, 20};
     }
 
 	return success;
@@ -506,10 +563,10 @@ void Game::play()
                     Pacman pacman(20, 20, TOTAL_YUMMY);
 
                     //Initialize ghosts
-                    Ghost blinky(180, 220);
-    //                Ghost clyde(360, 220);
-    //                Ghost inky(180, 340);
-    //                Ghost pinky(360, 340);
+                    Ghost blinky(180, 220, 0, 2); //the chasing ghost initially
+                    Ghost clyde(360, 220, 2, 1);
+                    Ghost inky(180, 340, 2, 0);
+                    Ghost pinky(360, 340, 3, 0);
 
                         //While the user does not quit
                         while (!quit)
@@ -521,8 +578,7 @@ void Game::play()
                             }
                             else
                             {
-    //                            if (pacman.lose(blinky) || pacman.lose(clyde) || pacman.lose(inky) || pacman.lose(pinky))
-                                if (pacman.lose(blinky))
+                                if (pacman.lose(blinky) || pacman.lose(clyde) || pacman.lose(inky) || pacman.lose(pinky))
                                 {
                                     break;
                                 }
@@ -557,9 +613,9 @@ void Game::play()
 
                             //Move ghost
                             blinky.move(pacman.getPos(), tileSet);
-        //                    clyde.move(pacman.getPos(), tileSet);
-        //                    inky.move(pacman.getPos(), tileSet);
-        //                    pinky.move(pacman.getPos(), tileSet);
+                            clyde.move(pacman.getPos(), tileSet);
+                            inky.move(pacman.getPos(), tileSet);
+                            pinky.move(pacman.getPos(), tileSet);
 
                             //Clear screen
                             SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
@@ -608,9 +664,9 @@ void Game::play()
 
                             //Render ghosts
                             blinky.render(blinkyTexture, blinkySpriteClips, frame, renderer);
-        //                    clyde.render(clydeTexture, renderer);
-        //                    inky.render(inkyTexture, renderer);
-        //                    pinky.render(pinkyTexture, renderer);
+                            clyde.render(clydeTexture, clydeSpriteClips, frame, renderer);
+                            inky.render(inkyTexture, inkySpriteClips, frame, renderer);
+                            pinky.render(pinkyTexture, pinkySpriteClips, frame, renderer);
 
                             //Render info screen
                             logoTexture.render(580, 50, renderer);

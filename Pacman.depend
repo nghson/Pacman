@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1556816037 source:/home/nghson/pacman/Ghost.cpp
+1556822389 source:/home/nghson/pacman/Ghost.cpp
 	"Ghost.h"
 
-1556815271 /home/nghson/pacman/Ghost.h
+1556822207 /home/nghson/pacman/Ghost.h
 	<SDL2/SDL.h>
 	<vector>
 	<cmath>
@@ -11,11 +11,12 @@
 	<queue>
 	<unordered_map>
 	<algorithm>
+	<ctime>
 	"Tile.h"
 	"Texture.h"
 	"Yummy.h"
 
-1556739273 /home/nghson/pacman/Tile.h
+1556816329 /home/nghson/pacman/Tile.h
 	<SDL2/SDL.h>
 	"Texture.h"
 
@@ -53,7 +54,7 @@
 	"Yummy.h"
 	"Ghost.h"
 
-1556739280 source:/home/nghson/pacman/Tile.cpp
+1556816487 source:/home/nghson/pacman/Tile.cpp
 	"Tile.h"
 
 1556592504 source:/home/nghson/pacman/Window.cpp
@@ -67,7 +68,7 @@
 1556708609 source:/home/nghson/pacman/Texture.cpp
 	"Texture.h"
 
-1556812269 source:/home/nghson/pacman/Game.cpp
+1556822370 source:/home/nghson/pacman/Game.cpp
 	"Game.h"
 
 1556813151 /home/nghson/pacman/PriorityQueue.h

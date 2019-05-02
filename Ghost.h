@@ -9,6 +9,7 @@
 #include <queue>
 #include <unordered_map>
 #include <algorithm>
+#include <ctime>
 #include "Tile.h"
 #include "Texture.h"
 #include "Yummy.h"
@@ -18,7 +19,7 @@ class Ghost
 {
 public:
     //Constructor
-    Ghost(int _x, int _y);
+    Ghost(int _x, int _y, int _name, int _movingMode);
 
     //Render ghost on screen
     void render(Texture& spriteSheetTexture, SDL_Rect spriteClips[][4], int frame, SDL_Renderer* renderer);
@@ -29,14 +30,23 @@ public:
     //Move the ghost
     void move(SDL_Rect pacmanPos, Tile* tiles[]);
 
-//    //Pathfinder: just moving randomly
-//    int randomPath();
+    //Pathfinder: just moving randomly
+    int randomPath(Tile* tiles[]);
 
     //Pathfinder: A* Search
     std::vector<SDL_Rect> aStarPath(SDL_Rect start, SDL_Rect goal, Tile* tiles[]);
 
+    //Pathfinder: just moving stupidly
+    int stupidPath(SDL_Rect goal, Tile* tiles[]);
+
     //Get current position
     SDL_Rect getPos();
+
+    //Change the moving mode
+    void changeMovingMode(int _movingMode);
+
+    //Get moving mode of the ghost
+    int getMovingMode();
 
 private:
     //Size of ghost
@@ -55,6 +65,29 @@ private:
         MOVING_RIGHT,
         NOT_MOVING
     };
+
+    //Indicators of ghost moving mode
+    enum
+    {
+        RANDOM,
+        CHASE,
+        STUPID
+    };
+
+    //Indicators of names
+    enum
+    {
+        BLINKY,
+        CLYDE,
+        INKY,
+        PINKY
+    };
+
+    //Name
+    int name;
+
+    //Ghost moving mode
+    int movingMode;
 
     //Position of ghost
     SDL_Rect pos;

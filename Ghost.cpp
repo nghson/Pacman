@@ -29,13 +29,19 @@ bool operator < (SDL_Rect a, SDL_Rect b)
     return (std::tie(a.x, a.y) < std::tie(b.x, b.y));
 }
 
-Ghost::Ghost(int _x, int _y)
+Ghost::Ghost(int _x, int _y, int _name, int _movingMode)
 {
     //Initialize position of ghost
     pos = {_x, _y, GHOST_WIDTH, GHOST_HEIGHT};
 
     //Initialize direction
     dir = NOT_MOVING;
+
+    //Initialize moving mode
+    movingMode = _movingMode;
+
+    //Set name
+    name = _name;
 }
 
 int Ghost::heuristic(SDL_Rect a, SDL_Rect b)
@@ -77,19 +83,114 @@ SDL_Rect Ghost::getPos()
     return pos;
 }
 
-void Ghost::move(SDL_Rect pacmanPos, Tile* tiles[])
+void Ghost::move(SDL_Rect goal, Tile* tiles[])
 {
-    //Path from A*
-    std::vector<SDL_Rect> path = aStarPath(pos, pacmanPos, tiles);
+    if (movingMode == CHASE)
+    {
+        //Path from A*
+        std::vector<SDL_Rect> path = aStarPath(pos, goal, tiles);
 
-    //Where the ghost supposed to be next?
-    SDL_Rect nextPos = path[1];
+        //Where the ghost supposed to be next?
+        SDL_Rect nextPos = path[1];
 
-    //Move the ghost accordingly
-    if (pos.x < nextPos.x && canMove(pos, MOVING_RIGHT, tiles)) pos.x += GHOST_VEL;
-    else if (pos.x > nextPos.x && canMove(pos, MOVING_LEFT, tiles)) pos.x -= GHOST_VEL;
-    else if (pos.y > nextPos.y && canMove(pos, MOVING_UP, tiles)) pos.y -= GHOST_VEL;
-    else if (pos.y < nextPos.y && canMove(pos, MOVING_DOWN, tiles)) pos.y += GHOST_VEL;
+        //Move the ghost accordingly
+        if (pos.x < nextPos.x && canMove(pos, MOVING_RIGHT, tiles)) pos.x += GHOST_VEL;
+        else if (pos.x > nextPos.x && canMove(pos, MOVING_LEFT, tiles)) pos.x -= GHOST_VEL;
+        else if (pos.y > nextPos.y && canMove(pos, MOVING_UP, tiles)) pos.y -= GHOST_VEL;
+        else if (pos.y < nextPos.y && canMove(pos, MOVING_DOWN, tiles)) pos.y += GHOST_VEL;
+    }
+    else if (movingMode == RANDOM)
+    {
+        int path = randomPath(tiles);
+        switch (path)
+        {
+        case MOVING_UP:
+            pos.y -= GHOST_VEL;
+            break;
+        case MOVING_DOWN:
+            pos.y += GHOST_VEL;
+            break;
+        case MOVING_LEFT:
+            pos.x -= GHOST_VEL;
+            break;
+        case MOVING_RIGHT:
+            pos.x += GHOST_VEL;
+            break;
+        }
+    }
+    else if (movingMode == STUPID)
+    {
+        int path = stupidPath(goal, tiles);
+        switch (path)
+        {
+        case MOVING_UP:
+            pos.y -= GHOST_VEL;
+            break;
+        case MOVING_DOWN:
+            pos.y += GHOST_VEL;
+            break;
+        case MOVING_LEFT:
+            pos.x -= GHOST_VEL;
+            break;
+        case MOVING_RIGHT:
+            pos.x += GHOST_VEL;
+            break;
+        case NOT_MOVING:
+            break;
+        }
+    }
+
+    //Handle teleport
+    if (pos.x > 560 + GHOST_WIDTH) pos.x = 0;
+    else if (pos.x < 0) pos.x = 560 - GHOST_WIDTH;
+}
+
+void Ghost::changeMovingMode(int _movingMode)
+{
+    movingMode = _movingMode;
+}
+
+int Ghost::getMovingMode()
+{
+    return movingMode;
+}
+
+int Ghost::stupidPath(SDL_Rect goal, Tile* tiles[])
+{
+    const int distUP = heuristic(goal, {pos.x, pos.y - GHOST_VEL, pos.w, pos.h});
+    const int distDOWN = heuristic(goal, {pos.x, pos.y + GHOST_VEL, pos.w, pos.h});
+    const int distLEFT = heuristic(goal, {pos.x - GHOST_VEL, pos.y, pos.w, pos.h});
+    const int distRIGHT = heuristic(goal, {pos.x + GHOST_VEL, pos.y, pos.w, pos.h});
+
+    int distMIN = std::min(std::min(distUP, distDOWN), std::min(distLEFT, distRIGHT));
+    if (distMIN == distUP && canMove(pos, MOVING_UP, tiles)) return MOVING_UP;
+    else if (distMIN == distDOWN && canMove(pos, MOVING_DOWN, tiles)) return MOVING_DOWN;
+    else if (distMIN == distLEFT && canMove(pos, MOVING_LEFT, tiles)) return MOVING_LEFT;
+    else if (distMIN == distRIGHT && canMove(pos, MOVING_RIGHT, tiles)) return MOVING_RIGHT;
+    else return NOT_MOVING;
+}
+
+int Ghost::randomPath(Tile* tiles[])
+{
+    int randomMove;
+
+    //Set the random seed
+    if (name == BLINKY) srand(time(NULL) + 1234);
+    else if (name == CLYDE) srand(time(NULL) + 2345);
+    else if (name == INKY) srand(time(NULL) + 3456);
+    else if (name == PINKY) srand(time(NULL) + 54941);
+
+    //Get a random number in the range [0,3]
+    int random = rand() % 4;
+
+    //Choose the move of the ghost randomly
+    if (random == MOVING_UP && canMove(pos, MOVING_UP, tiles)) randomMove = MOVING_UP;
+    else if (random == MOVING_DOWN && canMove(pos, MOVING_DOWN, tiles)) randomMove = MOVING_DOWN;
+    else if (random == MOVING_LEFT && canMove(pos, MOVING_LEFT, tiles)) randomMove = MOVING_LEFT;
+    else if (random == MOVING_RIGHT && canMove(pos, MOVING_RIGHT, tiles)) randomMove = MOVING_RIGHT;
+    else randomMove = NOT_MOVING;
+
+    return randomMove;
 }
 
 //A* Search
