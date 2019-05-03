@@ -14,7 +14,7 @@ Texture::~Texture()
 	free();
 }
 
-bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)
+bool Texture::loadFromFileBMP(SDL_Renderer* renderer, std::string path)
 {
 	//Get rid of preexisting texture
 	free();
@@ -26,7 +26,7 @@ bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)
 	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
 	if (loadedSurface == NULL)
 	{
-		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+		printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 	}
 	else
 	{
@@ -46,7 +46,6 @@ bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
 	}
-
 	texture = newTexture;
 
 	return texture != NULL;
@@ -62,12 +61,6 @@ void Texture::free()
 		width = 0;
 		height = 0;
 	}
-}
-
-void Texture::resetDim(int _width, int _height)
-{
-    width = _width;
-    height = _height;
 }
 
 void Texture::render(int x, int y, SDL_Renderer* renderer, SDL_Rect* clip)

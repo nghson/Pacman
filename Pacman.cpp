@@ -2,11 +2,11 @@
 
 Pacman::Pacman(int _x, int _y, const int TOTAL_YUMMY)
 {
+    //Save for later resetPos()
+    initPos = {_x, _y, PACMAN_WIDTH, PACMAN_HEIGHT};
+
     //Initialize the collision box
-    pos.x = _x;
-    pos.y = _y;
-	pos.w = PACMAN_WIDTH;
-	pos.h = PACMAN_HEIGHT;
+    pos = initPos;
 
     //Initialize the velocity
     velX = 0;
@@ -23,6 +23,9 @@ Pacman::Pacman(int _x, int _y, const int TOTAL_YUMMY)
 
     //Initialize score
     score = 0;
+
+    //Initialize lives
+    life = 3;
 }
 
 void Pacman::move(Tile *tiles[], int PLAYSCREEN_WIDTH)
@@ -204,9 +207,25 @@ void Pacman::handlePending(Tile* tiles[])
     }
 }
 
-bool Pacman::lose(Ghost ghost)
+void Pacman::resetPos()
 {
-    return checkCollision(ghost.getPos(), pos);
+    pos.x = initPos.x;
+    pos.y = initPos.y;
+}
+
+bool Pacman::die(Ghost ghost)
+{
+    if (checkCollision(ghost.getPos(), pos))
+    {
+        life--;
+        return true;
+    }
+    return false;
+}
+
+bool Pacman::lose()
+{
+    return (life <= 0);
 }
 
 bool Pacman::win()
@@ -245,4 +264,9 @@ SDL_Rect Pacman::getPos()
 int Pacman::getScore()
 {
     return score;
+}
+
+int Pacman::getLife()
+{
+    return life;
 }

@@ -42,13 +42,13 @@ public:
     //Get current position
     SDL_Rect getPos();
 
-    //Change the moving mode
-    void changeMovingMode(int _movingMode);
-
-    //Get moving mode of the ghost
-    int getMovingMode();
+    //Reset position after pacman died
+    void resetPos();
 
 private:
+    //Initial position
+    SDL_Rect initPos;
+
     //Size of ghost
     const int GHOST_WIDTH = 20;
     const int GHOST_HEIGHT = 20;

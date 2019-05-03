@@ -16,8 +16,8 @@ public:
     //Destructor: free memory
     ~Texture();
 
-    //Loads image at specified path
-    bool loadFromFile(SDL_Renderer* renderer, std::string path);
+    //Loads BMP image at specified path
+    bool loadFromFileBMP(SDL_Renderer* renderer, std::string path);
 
     //Deallocates texture
     void free();
@@ -30,9 +30,6 @@ public:
 
     //Get height
     int getHeight();
-
-    //Reset dimensions
-    void resetDim(int _width, int _height);
 
     //Creates image from font string
     bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer);

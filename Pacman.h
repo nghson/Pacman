@@ -31,7 +31,10 @@ public:
     bool win();
 
     //Has pacman lost?
-    bool lose(Ghost ghost);
+    bool lose();
+
+    //Has pacman died?
+    bool die(Ghost ghost);
 
     //Pacman eats some yummy!
     std::vector<int> eatYummy(Yummy* yummy[], const int TOTAL_TILES);
@@ -42,7 +45,16 @@ public:
     //Get score
     int getScore();
 
+    //Reset position after death
+    void resetPos();
+
+    //Get lives left
+    int getLife();
+
 private:
+    //Initial position
+    SDL_Rect initPos;
+
     //Indicators of moving direction
     enum
     {
@@ -77,6 +89,9 @@ private:
 
     //Current score: small = 10, big = 100
     int score;
+
+    //Lives left
+    int life;
 
 };
 

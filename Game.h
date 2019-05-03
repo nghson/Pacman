@@ -4,9 +4,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdio.h>
+#include <vector>
 #include <string>
 #include <fstream>
+#include <iostream>
 #include "Texture.h"
 #include "Tile.h"
 #include "Pacman.h"
@@ -27,11 +30,17 @@ public:
     //Load font text
     bool loadFont();
 
+    //Load audio
+    bool loadAudio();
+
     //Set tiles
     bool setTiles(Tile* tiles[], Yummy* yummy[]);
 
     //Close SDL and free memory
-    void close(Tile* tiles[], Yummy* yummy[]);
+    void close();
+
+    //Free the tiles
+    void freeTiles(Tile* tiles[], Yummy* yummy[]);
 
     //Play the game
     void play();
@@ -71,6 +80,7 @@ private:
     Texture clydeTexture;
     Texture inkyTexture;
     Texture pinkyTexture;
+    Texture deadPacmanTexture;
 
     //Texture for info screen
     Texture textYScoreTexture;
@@ -97,6 +107,7 @@ private:
     SDL_Rect clydeSpriteClips[4][4];
     SDL_Rect inkySpriteClips[4][4];
     SDL_Rect pinkySpriteClips[4][4];
+    SDL_Rect pacmanDeadSpriteClips[8];
 
     //Types of yummy
     enum
@@ -128,6 +139,15 @@ private:
     const int BLANK_TILE = 9;
     const int WALL_TILE = 1;
     const int SPACE_TILE = 0;
+
+    //Intro music
+    Mix_Music* introMusic = NULL;
+    Mix_Music* winMusic = NULL;
+    Mix_Music* lostMusic = NULL;
+
+    //Sound effects
+    Mix_Chunk* pacmanDie = NULL;
+    Mix_Chunk* pacmanEat = NULL;
 };
 
 #endif // GAME_H

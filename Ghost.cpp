@@ -31,8 +31,11 @@ bool operator < (SDL_Rect a, SDL_Rect b)
 
 Ghost::Ghost(int _x, int _y, int _name, int _movingMode)
 {
+    //Save initial position for resetPos()
+    initPos = {_x, _y, GHOST_WIDTH, GHOST_HEIGHT};
+
     //Initialize position of ghost
-    pos = {_x, _y, GHOST_WIDTH, GHOST_HEIGHT};
+    pos = initPos;
 
     //Initialize direction
     dir = NOT_MOVING;
@@ -42,6 +45,12 @@ Ghost::Ghost(int _x, int _y, int _name, int _movingMode)
 
     //Set name
     name = _name;
+}
+
+void Ghost::resetPos()
+{
+    pos.x = initPos.x;
+    pos.y = initPos.y;
 }
 
 int Ghost::heuristic(SDL_Rect a, SDL_Rect b)
@@ -143,16 +152,6 @@ void Ghost::move(SDL_Rect goal, Tile* tiles[])
     //Handle teleport
     if (pos.x > 560 + GHOST_WIDTH) pos.x = 0;
     else if (pos.x < 0) pos.x = 560 - GHOST_WIDTH;
-}
-
-void Ghost::changeMovingMode(int _movingMode)
-{
-    movingMode = _movingMode;
-}
-
-int Ghost::getMovingMode()
-{
-    return movingMode;
 }
 
 int Ghost::stupidPath(SDL_Rect goal, Tile* tiles[])
