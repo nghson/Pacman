@@ -23,7 +23,7 @@ bool operator!=(SDL_Rect a, SDL_Rect b)
     return (a.x != b.x || a.y != b.y);
 }
 
-//Overloading < for priority_queue
+//Overloading <
 bool operator < (SDL_Rect a, SDL_Rect b)
 {
     return (std::tie(a.x, a.y) < std::tie(b.x, b.y));

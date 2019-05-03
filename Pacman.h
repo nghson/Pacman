@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Yummy.h"
 #include "Ghost.h"
+#include "Collision.h"
 
 //Pacman that will move around on the screen by keystrokes
 class Pacman
