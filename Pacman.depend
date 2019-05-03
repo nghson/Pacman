@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1556868520 source:/home/nghson/pacman/Ghost.cpp
+1556871367 source:/home/nghson/pacman/Ghost.cpp
 	"Ghost.h"
 
 1556868831 /home/nghson/pacman/Ghost.h
@@ -32,7 +32,7 @@
 	"Tile.h"
 	"Texture.h"
 
-1556552238 source:/home/nghson/pacman/Main.cpp
+1556871334 source:/home/nghson/pacman/Main.cpp
 	"Game.h"
 
 1556867870 /home/nghson/pacman/Game.h
@@ -73,7 +73,7 @@
 1556867883 source:/home/nghson/pacman/Texture.cpp
 	"Texture.h"
 
-1556867864 source:/home/nghson/pacman/Game.cpp
+1556871313 source:/home/nghson/pacman/Game.cpp
 	"Game.h"
 
 1556813151 /home/nghson/pacman/PriorityQueue.h
@@ -84,6 +84,6 @@
 	<SDL2/SDL.h>
 	"Tile.h"
 
-1556868794 source:/home/nghson/pacman/Collision.cpp
+1556869086 source:/home/nghson/pacman/Collision.cpp
 	"Collision.h"
 

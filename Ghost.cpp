@@ -173,12 +173,6 @@ int Ghost::randomPath(Tile* tiles[])
 {
     int randomMove;
 
-    //Set the random seed
-    if (name == BLINKY) srand(time(NULL) + 1234);
-    else if (name == CLYDE) srand(time(NULL) + 2345);
-    else if (name == INKY) srand(time(NULL) + 3456);
-    else if (name == PINKY) srand(time(NULL) + 54941);
-
     //Get a random number in the range [0,3]
     int random = rand() % 4;
 
