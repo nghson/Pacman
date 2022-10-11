@@ -7,7 +7,7 @@ A cute Pacman game. There are four ghosts chasing Pacman using different methods
 The program is compatible with `Windows 11`. Just run the executable `Pacman.exe` and enjoy!
 
 ## Technical details
-The game was built by C++ using SDL2 graphic library, with MinGW compiler.
+The game was built by C++ using Simple DirectMedia Layer `SDL2` graphic library, with `MinGW` compiler.
 
-## Screenshots
+## Screenshot
 ![Gameplay](screenshot.png)
